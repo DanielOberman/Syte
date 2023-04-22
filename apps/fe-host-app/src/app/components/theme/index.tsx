@@ -1,6 +1,6 @@
 import type { FC, PropsWithChildren } from 'react';
 
-import { css, CssBaseline, GlobalStyles, ThemeProvider } from '@mui/material';
+import { css, CssBaseline, GlobalStyles } from '@mui/material';
 
 export const Theme: FC<PropsWithChildren> = ({ children }) => (
     <div>
