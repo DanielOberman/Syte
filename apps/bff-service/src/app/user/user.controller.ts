@@ -1,0 +1,107 @@
+import { Body, Controller, Get, Post, Res, Req, UnauthorizedException } from '@nestjs/common';
+import { Response, Request } from 'express';
+import { JwtService } from '@nestjs/jwt';
+
+import { UserService } from './user.service';
+
+@Controller('user')
+export class UserController {
+    constructor(private readonly UserService: UserService, private jwtService: JwtService) {}
+
+    /**
+     * Register Endpoint
+     *
+     * This endpoint is used to register a new user.
+     * The endpoint accepts a POST request with email and password in the request body.
+     *
+     * @url /register
+     * @method POST
+     * @param {string} email - The user's email
+     * @param {string} password - The user's password
+     * @return {Object} - The user data of the newly registered user
+     * @throws {BadRequestException} - If the email is already registered
+     */
+    @Post('register')
+    async register(@Body('email') email: string, @Body('password') password: string) {
+        return this.UserService.register({ email, password });
+    }
+
+    /**
+     * Login Endpoint
+     *
+     * This endpoint is used to authenticate a user and generate a JWT cookie.
+     * The endpoint accepts a POST request with email and password in the request body.
+     *
+     * @url /login
+     * @method POST
+     * @param {string} email - The user's email
+     * @param {string} password - The user's password
+     * @param {Response} response - The response object
+     * @return {Object} - The user data of the authenticated user
+     * @throws {UnauthorizedException} - If the user is not authenticated
+     */
+    @Post('login')
+    async login(
+        @Body('email') email: string,
+        @Body('password') password: string,
+        @Res({ passthrough: true }) response: Response,
+    ) {
+        const user = await this.UserService.login({ email, password });
+
+        if (user) {
+            const jwt = await this.jwtService.signAsync({ id: user.id });
+
+            response.cookie('jwt', jwt, { httpOnly: true });
+        }
+
+        return user;
+    }
+
+    /**
+     * User Endpoint
+     *
+     * This endpoint returns the user data of the authenticated user.
+     * The endpoint accepts a GET request with a JWT cookie in the request header.
+     *
+     * @url /
+     * @method GET
+     * @param {Request} request - The request object
+     * @return {Object} - The user data of the authenticated user
+     * @throws {UnauthorizedException} - If the user is not authenticated
+     */
+    @Get()
+    async user(@Req() request: Request) {
+        try {
+            const cookie = request.cookies['jwt'];
+            console.log(cookie);
+            const data = await this.jwtService.verifyAsync(cookie);
+            console.log(data);
+
+            if (!data) throw new UnauthorizedException();
+
+            const user = await this.UserService.findOne(data.id as string);
+            return user;
+        } catch (err) {
+            throw new UnauthorizedException();
+        }
+    }
+
+    /**
+     * Logout Endpoint
+     *
+     * This endpoint is used to log out a user by clearing their JWT cookie.
+     * The endpoint accepts a POST request and returns a success message in the response body.
+     *
+     * @url /logout
+     * @method POST
+     * @param {Response} response - The response object
+     * @return {Object} - A JSON object with a success message
+     * @throws {Error} - Internal Server Error
+     */
+    @Post('logout')
+    async logout(@Res({ passthrough: true }) response: Response) {
+        response.clearCookie('jwt');
+
+        return { message: 'success' };
+    }
+}
