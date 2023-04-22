@@ -14,8 +14,8 @@ export const Theme: FC<PropsWithChildren> = ({ children }) => (
                     height: 100%;
                 }
 
-                * {
-                    box-sizing: border-box;
+                #root > div {
+                    height: 100%;
                 }
             `}
         />

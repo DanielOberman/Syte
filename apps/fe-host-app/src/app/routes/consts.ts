@@ -4,12 +4,14 @@ export const APP_ROUTES = {
         PATH: '/',
         TITLE: 'home',
     },
-    LOGIN: {
-        PATH: '/login',
-        TITLE: 'login',
-    },
-    REGISTER: {
-        PATH: '/register',
-        TITLE: 'register',
+    USER: {
+        LOGIN: {
+            PATH: 'user/login',
+            TITLE: 'login',
+        },
+        REGISTER: {
+            PATH: 'user/register',
+            TITLE: 'register',
+        },
     },
 } as const;

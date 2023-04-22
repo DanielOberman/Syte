@@ -22,8 +22,20 @@ export class UserController {
      * @throws {BadRequestException} - If the email is already registered
      */
     @Post('register')
-    async register(@Body('email') email: string, @Body('password') password: string) {
-        return this.UserService.register({ email, password });
+    async register(
+        @Body('email') email: string,
+        @Body('password') password: string,
+        @Res({ passthrough: true }) response: Response,
+    ) {
+        const user = await this.UserService.register({ email, password });
+
+        if (user) {
+            const jwt = await this.jwtService.signAsync({ id: user.id });
+
+            response.cookie('jwt', jwt, { httpOnly: true });
+        }
+
+        return user;
     }
 
     /**
@@ -73,9 +85,7 @@ export class UserController {
     async user(@Req() request: Request) {
         try {
             const cookie = request.cookies['jwt'];
-            console.log(cookie);
             const data = await this.jwtService.verifyAsync(cookie);
-            console.log(data);
 
             if (!data) throw new UnauthorizedException();
 

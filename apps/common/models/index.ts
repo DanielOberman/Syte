@@ -1,5 +1,2 @@
-export interface IUser {
-    id?: string;
-    email: string;
-    password: string;
-}
+export * from './interfaces';
+export * from './enums';

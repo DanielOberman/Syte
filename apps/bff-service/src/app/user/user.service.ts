@@ -33,7 +33,7 @@ export class UserService {
 
         const isUserExist = await this.userModel.findOne({ email }).exec();
 
-        if (isUserExist) throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+        if (isUserExist) throw new HttpException('User already exists', HttpStatus.UNAUTHORIZED);
 
         const salt = await genSalt(10);
         const hashPassword = await hash(password, salt);

@@ -1,18 +1,26 @@
 import 'core-js/modules/es.array.iterator';
-import * as React from 'react';
+import React from 'react';
 import { IUser } from '@myworkspace/common';
+import { useGetUserQuery } from '../features/user/api';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
+import { SerializedError } from '@reduxjs/toolkit';
 
-export const AuthContext = React.createContext<IUser | null>(null);
+interface IAuthContext {
+    user: IUser;
+    error: FetchBaseQueryError | SerializedError | undefined;
+}
+
+export const AuthContext = React.createContext<IAuthContext | undefined>(undefined);
 
 const { Provider } = AuthContext;
 
-export const AuthProvider = React.memo<React.PropsWithChildren>(({ children }) => {
-    const [user, setUser] = React.useState<IUser | null>(null);
+export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+    const { data, error } = useGetUserQuery({});
 
-    const ctx: IUser | null = React.useMemo(() => user, [user]);
+    const ctx: IAuthContext | undefined = React.useMemo(() => ({ user: data, error }), [data, error]);
 
     return <Provider value={ctx}>{children}</Provider>;
-});
+};
 
 export const useAuth = () => {
     return React.useContext(AuthContext);
