@@ -1,8 +1,8 @@
 /** App routing. */
 export const APP_ROUTES = {
-    HOME: {
+    MAIN: {
         PATH: '/',
-        TITLE: 'home',
+        TITLE: 'main',
     },
     USER: {
         LOGIN: {

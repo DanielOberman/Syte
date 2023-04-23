@@ -11,6 +11,7 @@ import { Provider } from 'react-redux';
 import { store } from './store';
 import { AuthProvider } from './hooks/useAuth';
 import { LoginPage } from './components/login-page';
+import { NotFoundPage } from './components/not-found-page';
 
 export const App: React.FC = () => (
     <BrowserRouter>
@@ -28,8 +29,9 @@ export const App: React.FC = () => (
                                 </ProtectedRoute>
                             }
                         >
-                            <Route element={<div>HOME</div>} path={APP_ROUTES.HOME.PATH} />
+                            <Route element={<div>MAIN</div>} path={APP_ROUTES.MAIN.PATH} />
                         </Route>
+                        <Route path="*" element={<NotFoundPage />} />
                     </Routes>
                 </AuthProvider>
             </Provider>

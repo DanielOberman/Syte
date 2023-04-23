@@ -32,7 +32,7 @@ export const LoginPage: React.FC = () => {
     const onSubmit = (data: IUser) => {
         userRegister(data).then((res) => {
             if ('data' in res) {
-                navigate(APP_ROUTES.HOME.PATH);
+                navigate(APP_ROUTES.MAIN.PATH);
             }
             // TODO: Create exception
         });

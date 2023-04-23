@@ -5,18 +5,17 @@ import { Navigate } from 'react-router-dom';
 import { APP_ROUTES } from '../../routes/consts';
 
 import { useAuth } from '../../hooks/useAuth';
+import { IUser, IUserError } from '@myworkspace/common';
 
 export const ProtectedRoute: React.FC<PropsWithChildren> = ({ children }) => {
-    const user = useAuth();
+    const user = useAuth() as IUser | IUserError;
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (user.error?.status === 401 || !user) {
-        return <Navigate to={APP_ROUTES.USER.LOGIN.PATH} />;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-    } else if (user.error?.status === 400) {
-        return <Navigate to={APP_ROUTES.USER.REGISTER.PATH} />;
+    if ('error' in user) {
+        if (user.error?.status === 401 || !user) {
+            return <Navigate to={APP_ROUTES.USER.LOGIN.PATH} />;
+        } else if (user.error?.status === 400) {
+            return <Navigate to={APP_ROUTES.USER.REGISTER.PATH} />;
+        }
     }
 
     return <div>{children}</div>;

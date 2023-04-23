@@ -14,7 +14,7 @@ export class UserController {
      * This endpoint is used to register a new user.
      * The endpoint accepts a POST request with email and password in the request body.
      *
-     * @url /register
+     * @url user/register
      * @method POST
      * @param {string} email - The user's email
      * @param {string} password - The user's password
@@ -44,7 +44,7 @@ export class UserController {
      * This endpoint is used to authenticate a user and generate a JWT cookie.
      * The endpoint accepts a POST request with email and password in the request body.
      *
-     * @url /login
+     * @url user/login
      * @method POST
      * @param {string} email - The user's email
      * @param {string} password - The user's password
@@ -75,7 +75,7 @@ export class UserController {
      * This endpoint returns the user data of the authenticated user.
      * The endpoint accepts a GET request with a JWT cookie in the request header.
      *
-     * @url /
+     * @url user
      * @method GET
      * @param {Request} request - The request object
      * @return {Object} - The user data of the authenticated user
@@ -102,7 +102,7 @@ export class UserController {
      * This endpoint is used to log out a user by clearing their JWT cookie.
      * The endpoint accepts a POST request and returns a success message in the response body.
      *
-     * @url /logout
+     * @url user/logout
      * @method POST
      * @param {Response} response - The response object
      * @return {Object} - A JSON object with a success message
@@ -112,6 +112,6 @@ export class UserController {
     async logout(@Res({ passthrough: true }) response: Response) {
         response.clearCookie('jwt');
 
-        return { message: 'success' };
+        return { message: 'logout success' };
     }
 }
