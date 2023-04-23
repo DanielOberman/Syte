@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Res, Req, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 
 import { UserService } from './user.service';
+import { AuthGuard } from '../guards/authGuard';
 
 @Controller('user')
 export class UserController {
@@ -82,14 +83,15 @@ export class UserController {
      * @throws {UnauthorizedException} - If the user is not authenticated
      */
     @Get()
+    @UseGuards(AuthGuard)
     async user(@Req() request: Request) {
         try {
             const cookie = request.cookies['jwt'];
-            const data = await this.jwtService.verifyAsync(cookie);
+            const decoded = await this.jwtService.verifyAsync(cookie);
 
-            if (!data) throw new UnauthorizedException();
+            if (!decoded) throw new UnauthorizedException();
 
-            const user = await this.UserService.findOne(data.id as string);
+            const user = await this.UserService.findOne(decoded.id as string);
             return user;
         } catch (err) {
             throw new UnauthorizedException();
