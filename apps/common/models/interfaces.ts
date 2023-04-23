@@ -14,7 +14,6 @@ export interface IUserError {
 
 export interface ICatalog {
     id?: string;
-    userId?: string;
     name: string;
     vertical: string;
     isPrimary: boolean;

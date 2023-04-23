@@ -1,7 +1,7 @@
-import { CreateCatalogDto } from '../dto/create-catalog-dto';
+import { CatalogDto } from '../dto/create-catalog-dto';
 import { CatalogModel } from '../models/catalog.model';
 
-export const toCatalogDto = (data: CatalogModel): CreateCatalogDto => {
+export const toCreateCatalogDto = (data: CatalogModel): CatalogDto => {
     const { id, userId, name, vertical, isPrimary } = data;
 
     const catalogDto = {
@@ -13,4 +13,14 @@ export const toCatalogDto = (data: CatalogModel): CreateCatalogDto => {
     };
 
     return catalogDto;
+};
+
+export const toCatalogsDto = (data: CatalogModel[]): CatalogDto[] => {
+    return data.map((catalog) => ({
+        id: catalog.id,
+        userId: catalog.userId,
+        name: catalog.name,
+        vertical: catalog.vertical,
+        isPrimary: catalog.isPrimary,
+    }));
 };

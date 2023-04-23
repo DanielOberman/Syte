@@ -1,18 +1,17 @@
-import { IsNotEmpty, IsEmail } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
-export class CreateCatalogDto {
+export class CatalogDto {
+    id?: string;
+
     @IsNotEmpty()
     userId: string;
 
     @IsNotEmpty()
-    @IsEmail()
     name: string;
 
     @IsNotEmpty()
-    @IsEmail()
     vertical: string;
 
     @IsNotEmpty()
-    @IsEmail()
     isPrimary: boolean;
 }

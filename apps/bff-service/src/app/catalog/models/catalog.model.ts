@@ -5,6 +5,8 @@ import { ICatalog } from '@myworkspace/common';
 
 @Schema({ collection: 'catalog', timestamps: true })
 export class CatalogModel extends Document implements ICatalog {
+    id?: string;
+
     @Prop({ required: true })
     userId: string;
 
