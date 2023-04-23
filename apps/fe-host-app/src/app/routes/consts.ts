@@ -1,8 +1,8 @@
 /** App routing. */
 export const APP_ROUTES = {
-    MAIN: {
-        PATH: '/',
-        TITLE: 'main',
+    CATALOGS: {
+        PATH: '/catalogs',
+        TITLE: 'catalogs',
     },
     USER: {
         LOGIN: {

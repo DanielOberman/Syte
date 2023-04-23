@@ -6,12 +6,9 @@ import { TextField, Button, Box, Typography } from '@mui/material';
 import { schema } from './schema';
 import { IUser } from '@myworkspace/common';
 import { useUserRegisterMutation } from '../../features/user/api';
-import { useNavigate } from 'react-router-dom';
 import { APP_ROUTES } from '../../routes/consts';
 
 export const LoginPage: React.FC = () => {
-    const navigate = useNavigate();
-
     const {
         register,
         handleSubmit,
@@ -32,7 +29,7 @@ export const LoginPage: React.FC = () => {
     const onSubmit = (data: IUser) => {
         userRegister(data).then((res) => {
             if ('data' in res) {
-                navigate(APP_ROUTES.MAIN.PATH);
+                window.location.pathname = APP_ROUTES.CATALOGS.PATH;
             }
             // TODO: Create exception
         });

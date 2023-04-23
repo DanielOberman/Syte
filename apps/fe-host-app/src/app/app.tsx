@@ -12,6 +12,7 @@ import { store } from './store';
 import { AuthProvider } from './hooks/useAuth';
 import { LoginPage } from './components/login-page';
 import { NotFoundPage } from './components/not-found-page';
+import { CatalogsPage } from './components/catalogs-page';
 
 export const App: React.FC = () => (
     <BrowserRouter>
@@ -29,7 +30,7 @@ export const App: React.FC = () => (
                                 </ProtectedRoute>
                             }
                         >
-                            <Route element={<div>MAIN</div>} path={APP_ROUTES.MAIN.PATH} />
+                            <Route element={<CatalogsPage />} path={APP_ROUTES.CATALOGS.PATH} />
                         </Route>
                         <Route path="*" element={<NotFoundPage />} />
                     </Routes>
