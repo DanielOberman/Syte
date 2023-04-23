@@ -12,10 +12,10 @@ export interface IUserError {
     };
 }
 
-export interface ICatalogs {
-    id: string;
+export interface ICatalog {
+    id?: string;
     userId?: string;
     name: string;
-    vertical: EVertical;
+    vertical: string;
     isPrimary: boolean;
 }

@@ -18,7 +18,7 @@ export class UserService {
 
     async login({ email, password }: UserLoginDto): Promise<UserDto> {
         const user = await this.userModel.findOne({ email }).exec();
-
+        console.log(user);
         if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 
         const isEqual = await compare(password, user.password);

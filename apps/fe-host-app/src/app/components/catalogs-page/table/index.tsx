@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { css } from '@emotion/react';
-import { ICatalogs } from '@myworkspace/common';
+import { ICatalog } from '@myworkspace/common';
 import { Box, Button, Chip, Tooltip, Typography, ButtonGroup } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import type { GridCellParams, GridColDef } from '@mui/x-data-grid';
@@ -31,17 +31,17 @@ const styles = {
 };
 
 interface IProps {
-    data: ICatalogs[];
+    data: ICatalog[];
     isLoading: boolean;
     isFetching: boolean;
 }
 
-const COLUMNS: GridColDef<ICatalogs>[] = [
+const COLUMNS: GridColDef<ICatalog>[] = [
     {
         field: 'name',
         headerName: 'Name',
         flex: 1,
-        renderCell: ({ id, value }: GridCellParams<ICatalogs, string>) => (
+        renderCell: ({ id, value }: GridCellParams<ICatalog, string>) => (
             <Tooltip title={value} placement="top-start">
                 <Typography className="engagementName" variant="body2" noWrap>
                     {value}
@@ -53,7 +53,7 @@ const COLUMNS: GridColDef<ICatalogs>[] = [
         field: 'vertical',
         headerName: 'Vertical',
         flex: 1,
-        renderCell: ({ id, value }: GridCellParams<ICatalogs, string>) => (
+        renderCell: ({ id, value }: GridCellParams<ICatalog, string>) => (
             <Tooltip title={value} placement="top-start">
                 <Typography className="engagementName" variant="body2" noWrap>
                     {value}
@@ -65,7 +65,7 @@ const COLUMNS: GridColDef<ICatalogs>[] = [
         field: 'isPrimary',
         headerName: 'Status',
         flex: 1,
-        renderCell: ({ id, value }: GridCellParams<ICatalogs, string>) => (
+        renderCell: ({ id, value }: GridCellParams<ICatalog, string>) => (
             <Box height="100%" width="100%" display="flex" justifyContent="space-between" alignItems="center">
                 {value ? <Chip size="small" label="Primary" color="info" variant="outlined" /> : <div>{''}</div>}
                 <ButtonGroup className="edit" variant="outlined" aria-label="outlined button group">

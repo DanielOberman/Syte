@@ -6,6 +6,7 @@ import { getMongoConfig } from '../config/db-connect.config';
 
 import { AppController } from './app.controller';
 import { UserModule } from './user/user.module';
+import { CatalogModule } from './catalog/catalog.module';
 
 @Module({
     imports: [
@@ -19,6 +20,7 @@ import { UserModule } from './user/user.module';
             useFactory: getMongoConfig,
         }),
         UserModule,
+        CatalogModule,
     ],
     controllers: [AppController],
 })
