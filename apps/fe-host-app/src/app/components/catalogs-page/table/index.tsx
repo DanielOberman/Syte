@@ -31,71 +31,92 @@ const styles = {
 };
 
 interface IProps {
-    data: ICatalog[];
+    data?: ICatalog[];
+    onDelete: (catalogIds: string[]) => void;
+    onEdit: (projectId?: string) => void;
     isLoading: boolean;
-    isFetching: boolean;
 }
 
-const COLUMNS: GridColDef<ICatalog>[] = [
-    {
-        field: 'name',
-        headerName: 'Name',
-        flex: 1,
-        renderCell: ({ id, value }: GridCellParams<ICatalog, string>) => (
-            <Tooltip title={value} placement="top-start">
-                <Typography className="engagementName" variant="body2" noWrap>
-                    {value}
-                </Typography>
-            </Tooltip>
-        ),
-    },
-    {
-        field: 'vertical',
-        headerName: 'Vertical',
-        flex: 1,
-        renderCell: ({ id, value }: GridCellParams<ICatalog, string>) => (
-            <Tooltip title={value} placement="top-start">
-                <Typography className="engagementName" variant="body2" noWrap>
-                    {value}
-                </Typography>
-            </Tooltip>
-        ),
-    },
-    {
-        field: 'isPrimary',
-        headerName: 'Status',
-        flex: 1,
-        renderCell: ({ id, value }: GridCellParams<ICatalog, string>) => (
-            <Box height="100%" width="100%" display="flex" justifyContent="space-between" alignItems="center">
-                {value ? <Chip size="small" label="Primary" color="info" variant="outlined" /> : <div>{''}</div>}
-                <ButtonGroup className="edit" variant="outlined" aria-label="outlined button group">
-                    <Button onClick={() => console.log('edit')}>
-                        <EditIcon />
-                    </Button>
+export const Table: React.FC<IProps> = ({ data, onDelete, onEdit, isLoading }) => {
+    const columns: GridColDef<ICatalog>[] = React.useMemo(
+        () => [
+            {
+                field: 'name',
+                headerName: 'Name',
+                flex: 1,
+                renderCell: ({ id, value }: GridCellParams<ICatalog, string>) => (
+                    <Tooltip title={value} placement="top-start">
+                        <Typography className="engagementName" variant="body2" noWrap>
+                            {value}
+                        </Typography>
+                    </Tooltip>
+                ),
+            },
+            {
+                field: 'vertical',
+                headerName: 'Vertical',
+                flex: 1,
+                renderCell: ({ id, value }: GridCellParams<ICatalog, string>) => (
+                    <Tooltip title={value} placement="top-start">
+                        <Typography className="engagementName" variant="body2" noWrap>
+                            {value}
+                        </Typography>
+                    </Tooltip>
+                ),
+            },
+            {
+                field: 'isPrimary',
+                headerName: 'Status',
+                flex: 1,
+                renderCell: ({ id, value }: GridCellParams<ICatalog, ICatalog>) => {
+                    const currentId = id as string;
 
-                    {!value && (
-                        <Button onClick={() => console.log('edit')}>
-                            <DeleteOutlineIcon color="warning" />
-                        </Button>
-                    )}
-                </ButtonGroup>
-            </Box>
-        ),
-    },
-];
+                    return (
+                        <Box
+                            height="100%"
+                            width="100%"
+                            display="flex"
+                            justifyContent="space-between"
+                            alignItems="center"
+                        >
+                            {value ? (
+                                <Chip size="small" label="Primary" color="info" variant="outlined" />
+                            ) : (
+                                <div>{''}</div>
+                            )}
+                            <ButtonGroup className="edit" variant="outlined" aria-label="outlined button group">
+                                <Button onClick={() => onEdit(currentId)}>
+                                    <EditIcon />
+                                </Button>
 
-export const Table: React.FC<IProps> = ({ data, isFetching }) => (
-    <div>
-        <DataGrid
-            css={styles.table}
-            rows={data}
-            columns={COLUMNS}
-            hideFooter={true}
-            autoHeight={true}
-            disableColumnMenu={true}
-            disableRowSelectionOnClick
-            sortingMode="client"
-            loading={isFetching}
-        />
-    </div>
-);
+                                {id && !value && (
+                                    <Button onClick={() => onDelete([currentId])}>
+                                        <DeleteOutlineIcon color="warning" />
+                                    </Button>
+                                )}
+                            </ButtonGroup>
+                        </Box>
+                    );
+                },
+            },
+        ],
+        [data, onEdit, onDelete],
+    );
+
+    return (
+        <div>
+            <DataGrid
+                css={styles.table}
+                rows={data || []}
+                columns={columns}
+                hideFooter={true}
+                autoHeight={true}
+                disableColumnMenu={true}
+                disableRowSelectionOnClick
+                sortingMode="client"
+                loading={isLoading}
+                getRowId={(row) => row._id}
+            />
+        </div>
+    );
+};

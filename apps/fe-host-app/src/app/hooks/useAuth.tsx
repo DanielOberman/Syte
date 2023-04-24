@@ -1,25 +1,42 @@
 import 'core-js/modules/es.array.iterator';
 import React from 'react';
-import { IClient } from '@myworkspace/common';
-import { useGetClientQuery } from '../features/client/api';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { SerializedError } from '@reduxjs/toolkit';
+import { IClient } from '@myworkspace/common';
+
+import { useGetClientQuery } from '../features/client/api';
 
 interface IAuthContext {
-    client: IClient;
+    client?: IClient | undefined;
     error: FetchBaseQueryError | SerializedError | undefined;
+    setClientData?: React.Dispatch<React.SetStateAction<IClient | undefined>>;
+    isLoading: boolean;
+    isFetching: boolean;
 }
 
-export const AuthContext = React.createContext<IAuthContext | undefined>(undefined);
-
-const { Provider } = AuthContext;
+export const AuthContext = React.createContext<IAuthContext>({
+    client: undefined,
+    error: undefined,
+    setClientData: undefined,
+    isLoading: false,
+    isFetching: false,
+});
 
 export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-    const { data, error } = useGetClientQuery({});
+    const [client, setClientData] = React.useState<IClient | undefined>(undefined);
 
-    const ctx: IAuthContext | undefined = React.useMemo(() => ({ client: data, error }), [data, error]);
+    const { data, error, isLoading, isFetching } = useGetClientQuery({});
 
-    return <Provider value={ctx}>{children}</Provider>;
+    React.useEffect(() => {
+        if (data) setClientData(data);
+    }, [data, error]);
+
+    const ctx: IAuthContext = React.useMemo(
+        () => ({ client, error, setClientData, isLoading, isFetching }),
+        [client, error, setClientData, isLoading, isFetching],
+    );
+
+    return <AuthContext.Provider value={ctx}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

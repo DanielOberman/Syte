@@ -1,7 +1,7 @@
 import { EVertical } from './enums';
 
 export interface ICatalog {
-    id?: string;
+    _id: string;
     name: string;
     vertical: string;
     isPrimary: boolean;
@@ -18,4 +18,9 @@ export interface IClientError {
     error: {
         status: number;
     };
+}
+
+export interface ICatalogDelete {
+    clientId: string;
+    catalogIds: string[];
 }
