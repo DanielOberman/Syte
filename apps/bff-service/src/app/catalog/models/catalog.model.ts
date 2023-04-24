@@ -8,9 +8,6 @@ export class CatalogModel extends Document implements ICatalog {
     id?: string;
 
     @Prop({ required: true })
-    userId: string;
-
-    @Prop({ required: true })
     name: string;
 
     @Prop({ required: true })

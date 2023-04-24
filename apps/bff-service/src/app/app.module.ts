@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { getMongoConfig } from '../config/db-connect.config';
 
 import { AppController } from './app.controller';
-import { UserModule } from './user/user.module';
+import { ClientModule } from './client/client.module';
 import { CatalogModule } from './catalog/catalog.module';
 
 @Module({
@@ -19,7 +19,7 @@ import { CatalogModule } from './catalog/catalog.module';
             inject: [ConfigService],
             useFactory: getMongoConfig,
         }),
-        UserModule,
+        ClientModule,
         CatalogModule,
     ],
     controllers: [AppController],

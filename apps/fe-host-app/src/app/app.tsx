@@ -21,7 +21,7 @@ export const App: React.FC = () => (
                 <AuthProvider>
                     <Routes>
                         <Route element={<PageLayout header={<HeaderLayout />} />}>
-                            <Route element={<LoginPage />} path={APP_ROUTES.USER.LOGIN.PATH} />
+                            <Route element={<LoginPage />} path={APP_ROUTES.CLIENT.LOGIN.PATH} />
                         </Route>
                         <Route
                             element={

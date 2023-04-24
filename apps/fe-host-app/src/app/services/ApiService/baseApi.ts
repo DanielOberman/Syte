@@ -11,6 +11,6 @@ export const baseApi = createApi({
             return headers;
         },
     }),
-    tagTypes: [EAPITagType.USER],
+    tagTypes: [EAPITagType.CLIENT],
     endpoints: () => ({}),
 });

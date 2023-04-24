@@ -4,13 +4,13 @@ export const APP_ROUTES = {
         PATH: '/catalogs',
         TITLE: 'catalogs',
     },
-    USER: {
+    CLIENT: {
         LOGIN: {
-            PATH: 'user/login',
+            PATH: 'client/login',
             TITLE: 'login',
         },
         REGISTER: {
-            PATH: 'user/register',
+            PATH: 'client/register',
             TITLE: 'register',
         },
     },

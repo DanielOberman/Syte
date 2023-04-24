@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 
 /**
- * A guard that checks whether a user is authenticated by verifying
+ * A guard that checks whether a client is authenticated by verifying
  * the presence and validity of a JWT token in their cookies.
  * If a valid token is found, the guard allows access to the
  * requested resource.

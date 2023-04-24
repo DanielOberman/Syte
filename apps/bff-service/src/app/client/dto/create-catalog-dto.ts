@@ -1,7 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
 
 export class CatalogDto {
-    id: string;
+    id?: string;
 
     @IsNotEmpty()
     clientId: string;
@@ -14,12 +14,4 @@ export class CatalogDto {
 
     @IsNotEmpty()
     isPrimary: boolean;
-}
-
-export class DeleteCatalogDto {
-    @IsNotEmpty()
-    clientId: string;
-
-    @IsNotEmpty()
-    catalogIds: string[];
 }

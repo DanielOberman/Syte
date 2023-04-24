@@ -5,16 +5,16 @@ import { Navigate } from 'react-router-dom';
 import { APP_ROUTES } from '../../routes/consts';
 
 import { useAuth } from '../../hooks/useAuth';
-import { IUser, IUserError } from '@myworkspace/common';
+import { IClient, IClientError } from '@myworkspace/common';
 
 export const ProtectedRoute: React.FC<PropsWithChildren> = ({ children }) => {
-    const user = useAuth() as IUser | IUserError;
+    const client = useAuth() as IClient | IClientError;
 
-    if ('error' in user) {
-        if (user.error?.status === 401 || user.error?.status === 403) {
-            return <Navigate to={APP_ROUTES.USER.LOGIN.PATH} />;
-        } else if (user.error?.status === 400) {
-            return <Navigate to={APP_ROUTES.USER.REGISTER.PATH} />;
+    if ('error' in client) {
+        if (client.error?.status === 401 || client.error?.status === 403) {
+            return <Navigate to={APP_ROUTES.CLIENT.LOGIN.PATH} />;
+        } else if (client.error?.status === 400) {
+            return <Navigate to={APP_ROUTES.CLIENT.REGISTER.PATH} />;
         }
     }
 

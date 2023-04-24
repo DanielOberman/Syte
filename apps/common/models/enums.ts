@@ -1,5 +1,5 @@
 export enum EAPITagType {
-    USER = 'USER',
+    CLIENT = 'CLIENT',
 }
 
 export enum EVertical {

@@ -4,8 +4,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { TextField, Button, Box, Typography } from '@mui/material';
 
 import { schema } from './schema';
-import { IUser } from '@myworkspace/common';
-import { useUserRegisterMutation } from '../../features/user/api';
+import { IClient } from '@myworkspace/common';
+import { useClientRegisterMutation } from '../../features/client/api';
 import { APP_ROUTES } from '../../routes/consts';
 
 export const LoginPage: React.FC = () => {
@@ -14,7 +14,7 @@ export const LoginPage: React.FC = () => {
         handleSubmit,
         formState: { errors },
         control,
-    } = useForm<IUser>({
+    } = useForm<IClient>({
         resolver: yupResolver(schema),
         mode: 'onChange',
         reValidateMode: 'onChange',
@@ -24,10 +24,10 @@ export const LoginPage: React.FC = () => {
     const { isDirty, isValid, isValidating } = useFormState({ control });
     const isSubmitDisabled = !isDirty || !isValid || isValidating;
 
-    const [userRegister, { isLoading }] = useUserRegisterMutation();
+    const [clientRegister, { isLoading }] = useClientRegisterMutation();
 
-    const onSubmit = (data: IUser) => {
-        userRegister(data).then((res) => {
+    const onSubmit = (data: IClient) => {
+        clientRegister(data).then((res) => {
             if ('data' in res) {
                 window.location.pathname = APP_ROUTES.CATALOGS.PATH;
             }
