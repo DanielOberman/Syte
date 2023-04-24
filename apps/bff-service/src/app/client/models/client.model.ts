@@ -4,7 +4,16 @@ import { Document } from 'mongoose';
 import { IClient } from '@myworkspace/common';
 import { CatalogModel, CatalogSchema } from '../../catalog/models/catalog.model';
 
-@Schema({ collection: 'client', timestamps: true })
+@Schema({
+    collection: 'client',
+    timestamps: true,
+    toJSON: {
+        transform: (_, ret) => {
+            ret.id = ret._id;
+            delete ret._id;
+        },
+    },
+})
 export class ClientModel extends Document implements IClient {
     @Prop({ required: true })
     email: string;

@@ -53,6 +53,7 @@ export class ClientService {
 
     async findOne(id: string): Promise<ClientDto> {
         const client = await this.clientModel.findOne({ _id: id }).exec();
+
         if (!client) throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
 
         return toClientDto(client);

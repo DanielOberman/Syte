@@ -3,8 +3,11 @@ import { JwtService } from '@nestjs/jwt';
 
 import { CatalogService } from './catalog.service';
 import { AuthGuard } from '../guards/authGuard';
-import { CatalogDto, DeleteCatalogDto } from './dto/create-catalog-dto';
 import { ClientDto } from '../client/dto/client.dto';
+
+import { CatalogDto } from './dto/catalog.dto';
+import { DeleteCatalogDto } from './dto/delete-catalog.dto';
+import { CreateCatalogDto } from './dto/create-catalog.dto';
 
 @Controller('catalog')
 export class CatalogController {
@@ -12,7 +15,7 @@ export class CatalogController {
 
     @Post('create')
     @UseGuards(AuthGuard)
-    async createCatalog(@Body() createCatalogDto: CatalogDto): Promise<ClientDto> {
+    async createCatalog(@Body() createCatalogDto: CreateCatalogDto): Promise<ClientDto> {
         const client = await this.catalogService.createCatalog(createCatalogDto);
 
         return client;
@@ -26,10 +29,10 @@ export class CatalogController {
         return client;
     }
 
-    @Patch('edit')
+    @Patch('udpate')
     @UseGuards(AuthGuard)
     async editCatalog(@Body() editCatalogDto: CatalogDto): Promise<ClientDto> {
-        const client = await this.catalogService.editCatalog(editCatalogDto);
+        const client = await this.catalogService.udpateCatalog(editCatalogDto);
 
         return client;
     }

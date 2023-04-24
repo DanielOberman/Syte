@@ -5,6 +5,7 @@ import { Box } from '@mui/material';
 
 import { useAuth } from '../../hooks/useAuth';
 import { useDeleteCatalogMutation } from '../../features/client/api';
+import { CatalogModal } from '../catalog-modal';
 
 import { Title } from './title';
 import { Table } from './table';
@@ -19,19 +20,21 @@ const styles = {
 };
 
 export const CatalogsPage: React.FC = () => {
-    const { client, setClientData, isLoading, isFetching } = useAuth();
+    const { client, setClientData, isLoading: isClienLoading, isFetching } = useAuth();
     const [modalOpen, setModalOpen] = React.useState(false);
-    const [currentProjectId, setCurrentProjectId] = React.useState<string | null>(null);
+    const [currentCatalogId, setCurrentCatalogId] = React.useState<string | null>(null);
 
     const [deleteCatalog, { isLoading: isDeleteLoading }] = useDeleteCatalogMutation();
+    const isLoading = isClienLoading || isFetching || isDeleteLoading;
+
     const handleOpenModal = (projectId?: string) => {
-        setCurrentProjectId(projectId ?? null);
+        setCurrentCatalogId(projectId ?? null);
         setModalOpen(true);
     };
 
     const handleCloseModal = () => {
         setModalOpen(false);
-        setCurrentProjectId(null);
+        setCurrentCatalogId(null);
     };
 
     const handleCatalogDelete = (catalogIds: string[]) => {
@@ -53,19 +56,20 @@ export const CatalogsPage: React.FC = () => {
         <CircularProgress />
     ) : (
         <>
-            <Title onAdd={handleOpenModal} />
+            <Title onAdd={handleOpenModal} showButton={!!client?.catalogs?.length} />
             <Table
+                onAdd={handleOpenModal}
                 onDelete={handleCatalogDelete}
                 onEdit={handleOpenModal}
                 data={client?.catalogs}
-                isLoading={isLoading || isFetching || isDeleteLoading}
+                isLoading={isLoading}
             />
-            {/* <Modal onOpen={modalOpen} onClose={handleCloseModal} currentProjectId={currentProjectId} /> */}
+            <CatalogModal onOpen={modalOpen} onClose={handleCloseModal} currentCatalogId={currentCatalogId} />
         </>
     );
 
     return (
-        <Box css={isLoading ? styles.empty : null} padding={6}>
+        <Box height="100%" css={isLoading ? styles.empty : null} padding={6} pt={9}>
             {content}
         </Box>
     );

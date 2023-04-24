@@ -2,11 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { CatalogDto, DeleteCatalogDto } from './dto/create-catalog-dto';
-import { CatalogModel } from './models/catalog.model';
 import { ClientModel } from '../client/models/client.model';
 import { toClientDto } from '../client/mappers';
 import { ClientDto } from '../client/dto/client.dto';
+
+import { CatalogDto } from './dto/catalog.dto';
+import { DeleteCatalogDto } from './dto/delete-catalog.dto';
+import { CatalogModel } from './models/catalog.model';
+import { CreateCatalogDto } from './dto/create-catalog.dto';
 
 @Injectable()
 export class CatalogService {
@@ -17,7 +20,7 @@ export class CatalogService {
         private readonly clientModel: Model<ClientModel>,
     ) {}
 
-    async createCatalog(createCatalogDto: CatalogDto): Promise<ClientDto> {
+    async createCatalog(createCatalogDto: CreateCatalogDto): Promise<ClientDto> {
         const { clientId, name, vertical, isPrimary } = createCatalogDto;
         const client = await this.clientModel.findOne({ _id: clientId }).exec();
 
@@ -39,7 +42,7 @@ export class CatalogService {
         const client = await this.clientModel.findOne({ _id: clientId }).exec();
 
         client.catalogs = client.catalogs.filter((catalog) => {
-            return catalog.isPrimary || !catalogIds.includes(catalog._id.toString());
+            return catalog.isPrimary || !catalogIds.includes(catalog.id.toString());
         });
 
         await client.save();
@@ -47,7 +50,7 @@ export class CatalogService {
         return toClientDto(client);
     }
 
-    async editCatalog(editCatalogDto: CatalogDto): Promise<ClientDto> {
+    async udpateCatalog(editCatalogDto: CatalogDto): Promise<ClientDto> {
         const { clientId, id, name, vertical, isPrimary } = editCatalogDto;
         const client = await this.clientModel.findOne({ _id: clientId }).exec();
 
