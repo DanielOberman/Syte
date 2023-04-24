@@ -3,7 +3,7 @@ import { Button, Checkbox, FormControl, FormControlLabel, MenuItem, Modal, TextF
 import { Close as CloseIcon } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import { css } from '@emotion/react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { schema } from './schema';
 import { ICatalogCreate, ICatalogUpdate } from '@myworkspace/common';
@@ -53,7 +53,6 @@ const styles = {
 };
 
 export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalogId }) => {
-    const [isPrimary, setIsPrimary] = React.useState(false);
     const [createCatalog, { isLoading: isCreateLoading }] = useCreateCatalogMutation();
     const [updateCatalog, { isLoading: isUpdateLoading }] = useUpdateCatalogMutation();
 
@@ -74,8 +73,10 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
     const {
         register,
         handleSubmit,
+        setValue,
         reset,
         formState: { errors },
+        control,
     } = useForm<Omit<ICatalogCreate, 'clientId'>>({
         defaultValues,
         resolver: yupResolver(schema),
@@ -83,16 +84,16 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
         reValidateMode: 'onChange',
         criteriaMode: 'all',
     });
+    const isPrimary = useWatch<Omit<ICatalogCreate, 'clientId'>, ['isPrimary']>({
+        control,
+        name: ['isPrimary'],
+    });
 
     React.useEffect(() => {
         reset(defaultValues);
     }, [defaultValues, reset]);
 
     const isLoading = isCreateLoading || isAuthLoading || isUpdateLoading;
-
-    const handleTogglePrimary = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIsPrimary(!isPrimary);
-    };
 
     const onSubmit = async (data: Omit<ICatalogCreate, 'clientId'>) => {
         const clientId = client?.id;
@@ -162,16 +163,17 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
                     <FormControlLabel
                         control={
                             <Checkbox
-                                disabled={isLoading}
                                 {...register('isPrimary')}
-                                checked={isPrimary}
-                                onChange={handleTogglePrimary}
-                                inputProps={{ 'aria-label': 'controlled' }}
+                                checked={isPrimary[0] || false}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                                    setValue('isPrimary', event.target.checked)
+                                }
                                 color="primary"
                             />
                         }
-                        label={<Typography style={{ fontWeight: 300 }}>Primary catalog</Typography>}
+                        label="Primary"
                     />
+
                     <Button variant="contained" type="submit" css={styles.button}>
                         Save
                     </Button>

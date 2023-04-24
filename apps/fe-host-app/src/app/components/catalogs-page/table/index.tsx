@@ -8,7 +8,7 @@ import type { GridCellParams, GridColDef } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
-import { ReactComponent as ReactLogo } from '../icon.svg';
+import { ReactComponent as EmptyLogo } from '../icon.svg';
 
 const styles = {
     table: () => css`
@@ -111,7 +111,7 @@ export const Table: React.FC<IProps> = ({ data, onAdd, onDelete, onEdit, isLoadi
         />
     ) : (
         <Box display="flex" justifyContent="center" alignItems="center" height="100%" flexDirection="column" gap={2}>
-            <ReactLogo />
+            <EmptyLogo />
             <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column" gap={4}>
                 <Typography color="#939DB7" variant="h6">
                     NOTHING HERE YET

@@ -5,10 +5,10 @@ import { TextField, Button, Box, Typography } from '@mui/material';
 
 import { schema } from './schema';
 import { IClient } from '@myworkspace/common';
-import { useClientLoginMutation } from '../../features/client/api';
+import { useClientRegisterMutation } from '../../features/client/api';
 import { APP_ROUTES } from '../../routes/consts';
 
-export const LoginPage: React.FC = () => {
+export const RegisterPage: React.FC = () => {
     const {
         register,
         handleSubmit,
@@ -24,10 +24,10 @@ export const LoginPage: React.FC = () => {
     const { isDirty, isValid, isValidating } = useFormState({ control });
     const isSubmitDisabled = !isDirty || !isValid || isValidating;
 
-    const [clientLogin, { isLoading }] = useClientLoginMutation();
+    const [clientRegister, { isLoading }] = useClientRegisterMutation();
 
     const onSubmit = (data: IClient) => {
-        clientLogin(data).then((res) => {
+        clientRegister(data).then((res) => {
             if ('data' in res) {
                 window.location.pathname = APP_ROUTES.CATALOGS.PATH;
             }
@@ -48,7 +48,7 @@ export const LoginPage: React.FC = () => {
                 onSubmit={handleSubmit(onSubmit)}
             >
                 <Typography textAlign="start" variant="h3" fontWeight={300}>
-                    Login
+                    Register
                 </Typography>
 
                 <TextField
@@ -70,11 +70,11 @@ export const LoginPage: React.FC = () => {
                     {...register('password')}
                 />
                 <Box display="flex" gap={4} justifyContent="flex-end">
-                    <Button variant="text" onClick={() => (window.location.pathname = APP_ROUTES.CLIENT.REGISTER.PATH)}>
-                        Register
+                    <Button variant="text" onClick={() => (window.location.pathname = APP_ROUTES.CLIENT.LOGIN.PATH)}>
+                        Login
                     </Button>
                     <Button variant="contained" type="submit" disabled={isSubmitDisabled || isLoading}>
-                        Sign in
+                        Sign Up
                     </Button>
                 </Box>
             </form>

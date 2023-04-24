@@ -13,6 +13,8 @@ import { AuthProvider } from './hooks/useAuth';
 import { LoginPage } from './components/login-page';
 import { NotFoundPage } from './components/not-found-page';
 import { CatalogsPage } from './components/catalogs-page';
+import { RegisterPage } from './components/register-page';
+import { UserInfo } from './components/user-info';
 
 export const App: React.FC = () => (
     <BrowserRouter>
@@ -23,10 +25,13 @@ export const App: React.FC = () => (
                         <Route element={<PageLayout header={<HeaderLayout />} />}>
                             <Route element={<LoginPage />} path={APP_ROUTES.CLIENT.LOGIN.PATH} />
                         </Route>
+                        <Route element={<PageLayout header={<HeaderLayout rightSide={<UserInfo />} />} />}>
+                            <Route element={<RegisterPage />} path={APP_ROUTES.CLIENT.REGISTER.PATH} />
+                        </Route>
                         <Route
                             element={
                                 <ProtectedRoute>
-                                    <PageLayout header={<HeaderLayout />} />
+                                    <PageLayout header={<HeaderLayout rightSide={<UserInfo />} />} />
                                 </ProtectedRoute>
                             }
                         >

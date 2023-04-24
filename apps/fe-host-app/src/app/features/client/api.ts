@@ -11,6 +11,12 @@ const clientApi = baseApi.injectEndpoints({
                 body: client,
             }),
         }),
+        clientLogout: builder.mutation({
+            query: () => ({
+                url: `client/logout`,
+                method: 'POST',
+            }),
+        }),
         clientRegister: builder.mutation<IClient, IClient>({
             query: (client) => ({
                 url: `client/register`,
@@ -51,6 +57,7 @@ const clientApi = baseApi.injectEndpoints({
 
 export const {
     useClientLoginMutation,
+    useClientLogoutMutation,
     useClientRegisterMutation,
     useGetClientQuery,
     useDeleteCatalogMutation,

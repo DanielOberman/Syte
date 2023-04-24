@@ -27,6 +27,8 @@ export const CatalogsPage: React.FC = () => {
     const [deleteCatalog, { isLoading: isDeleteLoading }] = useDeleteCatalogMutation();
     const isLoading = isClienLoading || isFetching || isDeleteLoading;
 
+    const clientData = React.useMemo(() => client, [client]);
+
     const handleOpenModal = (projectId?: string) => {
         setCurrentCatalogId(projectId ?? null);
         setModalOpen(true);
@@ -38,7 +40,7 @@ export const CatalogsPage: React.FC = () => {
     };
 
     const handleCatalogDelete = (catalogIds: string[]) => {
-        const clientId = client?.id;
+        const clientId = clientData?.id;
 
         if (clientId) {
             deleteCatalog({
@@ -56,12 +58,12 @@ export const CatalogsPage: React.FC = () => {
         <CircularProgress />
     ) : (
         <>
-            <Title onAdd={handleOpenModal} showButton={!!client?.catalogs?.length} />
+            <Title onAdd={handleOpenModal} showButton={!!clientData?.catalogs?.length} />
             <Table
                 onAdd={handleOpenModal}
                 onDelete={handleCatalogDelete}
                 onEdit={handleOpenModal}
-                data={client?.catalogs}
+                data={clientData?.catalogs}
                 isLoading={isLoading}
             />
             <CatalogModal onOpen={modalOpen} onClose={handleCloseModal} currentCatalogId={currentCatalogId} />
