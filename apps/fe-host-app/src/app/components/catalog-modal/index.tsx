@@ -86,7 +86,6 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
     const { isDirty, isValid, isValidating } = useFormState({ control });
 
     const isSubmitDisabled = !isDirty || !isValid || isValidating;
-    console.log(isSubmitDisabled);
 
     const isPrimary = useWatch<Omit<ICatalogCreate, 'clientId'>, ['isPrimary']>({
         control,

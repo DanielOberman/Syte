@@ -30,13 +30,13 @@ export class CatalogService {
         }
 
         if (isPrimary) {
-            const existingCategory = client.catalogs.find(
+            const existPrimaryCategory = client.catalogs.find(
                 (category) => category.vertical === vertical && category.isPrimary,
             );
 
-            if (existingCategory) {
-                existingCategory.isPrimary = false;
-                await existingCategory.save();
+            if (existPrimaryCategory) {
+                existPrimaryCategory.isPrimary = false;
+                await existPrimaryCategory.save();
             }
         }
 
@@ -63,13 +63,13 @@ export class CatalogService {
         }
 
         if (isPrimary) {
-            const existingCategory = client.catalogs.find(
+            const existPrimaryCategory = client.catalogs.find(
                 (category) => category.vertical === vertical && category.isPrimary,
             );
 
-            if (existingCategory) {
-                existingCategory.isPrimary = false;
-                await existingCategory.save();
+            if (existPrimaryCategory) {
+                existPrimaryCategory.isPrimary = false;
+                await existPrimaryCategory.save();
             }
         }
 

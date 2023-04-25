@@ -23,10 +23,9 @@ export const CatalogsPage: React.FC = () => {
     const { client, setClientData, isLoading: isClienLoading, isFetching } = useAuth();
     const [modalOpen, setModalOpen] = React.useState(false);
     const [currentCatalogId, setCurrentCatalogId] = React.useState<string | null>(null);
-
     const [deleteCatalog, { isLoading: isDeleteLoading }] = useDeleteCatalogMutation();
-    const isLoading = isClienLoading || isFetching || isDeleteLoading;
 
+    const isLoading = isClienLoading || isFetching || isDeleteLoading;
     const clientData = React.useMemo(() => client, [client]);
 
     const handleOpenModal = (projectId?: string) => {
