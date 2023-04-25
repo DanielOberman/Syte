@@ -2,7 +2,7 @@ import React from 'react';
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Logout as LogoutIcon, ArrowDropDown as ArrowDropDownIcon } from '@mui/icons-material';
-import { Button, ListItemIcon, Menu, MenuItem, Stack } from '@mui/material';
+import { Button, ListItemIcon, Menu, MenuItem, Stack, alpha, css } from '@mui/material';
 import { useClientLogoutMutation } from '../../features/client/api';
 import { APP_ROUTES } from '../../routes/consts';
 
@@ -37,7 +37,14 @@ export const UserInfo = () => {
                     startIcon={<AccountCircleIcon color="primary" />}
                     endIcon={<ArrowDropDownIcon color="primary" />}
                     size="large"
-                    css={{ borderRadius: '16px' }}
+                    css={() => css`
+                        color: #16191c;
+                        border-radius: 16px;
+                        background-color: ${isOpen ? alpha('#406EF1' as string, 0.09) : 'initial'};
+                        &:hover: {
+                            background-color: ${alpha('#406EF1' as string, 0.09)};
+                        }
+                    `}
                 />
             </Stack>
             <Menu

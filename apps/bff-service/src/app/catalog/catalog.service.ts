@@ -22,29 +22,31 @@ export class CatalogService {
 
     async createCatalog(createCatalogDto: CreateCatalogDto): Promise<ClientDto> {
         const { clientId, name, vertical, isPrimary } = createCatalogDto;
-        const client = await this.clientModel.findOne({ _id: clientId }).exec();
 
-        const catalog: CatalogModel = new this.catalogModel({
+        const client = await this.clientModel.findById(clientId).exec();
+
+        if (!client) {
+            throw new NotFoundException('Client not found');
+        }
+
+        if (isPrimary) {
+            const existingCategory = client.catalogs.find(
+                (category) => category.vertical === vertical && category.isPrimary,
+            );
+
+            if (existingCategory) {
+                existingCategory.isPrimary = false;
+                await existingCategory.save();
+            }
+        }
+
+        const catalog = new this.catalogModel({
             name,
             vertical,
-            isPrimary,
+            isPrimary: client?.catalogs.length ? isPrimary : true,
         });
 
         client.catalogs.push(catalog);
-
-        await client.save();
-
-        return toClientDto(client);
-    }
-
-    async deleteCatalogs(createCatalogDto: DeleteCatalogDto): Promise<ClientDto> {
-        const { clientId, catalogIds } = createCatalogDto;
-        const client = await this.clientModel.findOne({ _id: clientId }).exec();
-
-        client.catalogs = client.catalogs.filter((catalog) => {
-            return catalog.isPrimary || !catalogIds.includes(catalog.id.toString());
-        });
-
         await client.save();
 
         return toClientDto(client);
@@ -60,9 +62,33 @@ export class CatalogService {
             throw new NotFoundException(`Catalog with ID ${id} not found`);
         }
 
+        if (isPrimary) {
+            const existingCategory = client.catalogs.find(
+                (category) => category.vertical === vertical && category.isPrimary,
+            );
+
+            if (existingCategory) {
+                existingCategory.isPrimary = false;
+                await existingCategory.save();
+            }
+        }
+
         catalog.name = name;
         catalog.vertical = vertical;
-        catalog.isPrimary = isPrimary;
+        catalog.isPrimary = client?.catalogs.length <= 1 ? true : isPrimary;
+
+        await client.save();
+
+        return toClientDto(client);
+    }
+
+    async deleteCatalogs(createCatalogDto: DeleteCatalogDto): Promise<ClientDto> {
+        const { clientId, catalogIds } = createCatalogDto;
+        const client = await this.clientModel.findOne({ _id: clientId }).exec();
+
+        client.catalogs = client.catalogs.filter((catalog) => {
+            return catalog.isPrimary || !catalogIds.includes(catalog.id.toString());
+        });
 
         await client.save();
 

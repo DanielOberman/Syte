@@ -3,10 +3,10 @@ import { Button, Checkbox, FormControl, FormControlLabel, MenuItem, Modal, TextF
 import { Close as CloseIcon } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import { css } from '@emotion/react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm, useWatch, useFormState } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { schema } from './schema';
-import { ICatalogCreate, ICatalogUpdate } from '@myworkspace/common';
+import { ICatalogCreate } from '@myworkspace/common';
 import { useCreateCatalogMutation, useUpdateCatalogMutation } from '../../features/client/api';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -73,7 +73,6 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
     const {
         register,
         handleSubmit,
-        setValue,
         reset,
         formState: { errors },
         control,
@@ -84,6 +83,11 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
         reValidateMode: 'onChange',
         criteriaMode: 'all',
     });
+    const { isDirty, isValid, isValidating } = useFormState({ control });
+
+    const isSubmitDisabled = !isDirty || !isValid || isValidating;
+    console.log(isSubmitDisabled);
+
     const isPrimary = useWatch<Omit<ICatalogCreate, 'clientId'>, ['isPrimary']>({
         control,
         name: ['isPrimary'],
@@ -95,38 +99,34 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
 
     const isLoading = isCreateLoading || isAuthLoading || isUpdateLoading;
 
-    const onSubmit = async (data: Omit<ICatalogCreate, 'clientId'>) => {
-        const clientId = client?.id;
+    const onSubmit = React.useCallback(
+        async (data: Omit<ICatalogCreate, 'clientId'>) => {
+            const clientId = client?.id ?? null;
 
-        if (!clientId) {
-            return;
-        }
+            if (!clientId) {
+                return;
+            }
 
-        const catalogData = {
-            clientId,
-            ...data,
-        };
-
-        let res;
-        if (currentCatalog) {
-            const catalogToUpdate: ICatalogUpdate = {
-                id: currentCatalog.id,
-                ...catalogData,
+            const catalogData = {
+                clientId,
+                ...data,
             };
-            res = await updateCatalog(catalogToUpdate);
-        } else {
-            res = await createCatalog(catalogData);
-        }
 
-        if ('data' in res) {
-            setClientData?.(res.data);
-            onClose();
-            reset(defaultValues);
-        }
-    };
+            const res = currentCatalog
+                ? await updateCatalog({ id: currentCatalog.id, ...catalogData })
+                : await createCatalog(catalogData);
+
+            if ('data' in res) {
+                setClientData?.(res.data);
+                onClose();
+                reset(defaultValues);
+            }
+        },
+        [client?.id, currentCatalog, updateCatalog, createCatalog, setClientData, onClose, reset, defaultValues],
+    );
 
     return (
-        <Modal open={onOpen} onClose={onClose}>
+        <Modal open={onOpen}>
             <div css={styles.modal}>
                 <Typography fontWeight={300} variant="h5">
                     {currentCatalog ? 'Edit catalog' : 'Add catalog'}
@@ -135,15 +135,17 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
                     <CloseIcon />
                 </IconButton>
                 <form css={styles.form} onSubmit={handleSubmit(onSubmit)}>
-                    <FormControl css={styles.input}>
-                        <TextField
-                            size="small"
-                            disabled={isLoading}
-                            label="Name"
-                            {...register('name', { required: true })}
-                            helperText={errors.name?.message ? 'This field is required' : ''}
-                        />
-                    </FormControl>
+                    {!currentCatalog && (
+                        <FormControl css={styles.input}>
+                            <TextField
+                                size="small"
+                                disabled={isLoading}
+                                label="Name"
+                                {...register('name', { required: true })}
+                                helperText={errors.name?.message ?? ''}
+                            />
+                        </FormControl>
+                    )}
                     <FormControl css={styles.input}>
                         <TextField
                             size="small"
@@ -153,7 +155,7 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
                             disabled={isLoading}
                             {...register('vertical', { required: true })}
                             css={styles.select}
-                            helperText={errors.vertical?.message ? 'This field is required' : ''}
+                            helperText={errors.vertical?.message ?? ''}
                         >
                             <MenuItem value="home">Home</MenuItem>
                             <MenuItem value="general">General</MenuItem>
@@ -162,19 +164,12 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
                     </FormControl>
                     <FormControlLabel
                         control={
-                            <Checkbox
-                                {...register('isPrimary')}
-                                checked={isPrimary[0] || false}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                                    setValue('isPrimary', event.target.checked)
-                                }
-                                color="primary"
-                            />
+                            <Checkbox {...register('isPrimary')} checked={isPrimary[0] || false} color="primary" />
                         }
                         label="Primary"
                     />
 
-                    <Button variant="contained" type="submit" css={styles.button}>
+                    <Button disabled={isSubmitDisabled} variant="contained" type="submit" css={styles.button}>
                         Save
                     </Button>
                 </form>
