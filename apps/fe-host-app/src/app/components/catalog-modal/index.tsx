@@ -1,14 +1,15 @@
 import React from 'react';
-import { Button, Checkbox, FormControl, FormControlLabel, MenuItem, Modal, TextField, Typography } from '@mui/material';
+import { Box, Button, Checkbox, MenuItem, Modal, TextField, Typography } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import { css } from '@emotion/react';
-import { useForm, useWatch, useFormState } from 'react-hook-form';
+import { useForm, useFormState, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { schema } from './schema';
-import { ICatalogCreate } from '@myworkspace/common';
+import { ICatalogCreate, MESSAGES } from '@myworkspace/common';
 import { useCreateCatalogMutation, useUpdateCatalogMutation } from '../../features/client/api';
 import { useAuth } from '../../hooks/useAuth';
+import { useSnackbar } from '../../hooks/useSnackBar';
 
 interface IProps {
     onOpen: boolean;
@@ -36,14 +37,8 @@ const styles = {
         flex-direction: column;
         gap: 16px;
     `,
-    input: css`
-        margin-top: 10px;
-    `,
     button: css`
         align-self: flex-end;
-    `,
-    select: css`
-        width: 100%;
     `,
     closeButton: css`
         position: absolute;
@@ -55,6 +50,7 @@ const styles = {
 export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalogId }) => {
     const [createCatalog, { isLoading: isCreateLoading }] = useCreateCatalogMutation();
     const [updateCatalog, { isLoading: isUpdateLoading }] = useUpdateCatalogMutation();
+    const { setValue } = useSnackbar();
 
     const { client, setClientData, isLoading: isAuthLoading } = useAuth();
     const currentCatalog = client?.catalogs.find((i) => i.id === currentCatalogId);
@@ -84,13 +80,10 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
         criteriaMode: 'all',
     });
     const { isDirty, isValid, isValidating } = useFormState({ control });
-
-    const isSubmitDisabled = !isDirty || !isValid || isValidating;
-
-    const isPrimary = useWatch<Omit<ICatalogCreate, 'clientId'>, ['isPrimary']>({
-        control,
-        name: ['isPrimary'],
-    });
+    const isSubmitDisabled = React.useMemo(
+        () => !isDirty || !isValid || isValidating || !!Object.keys(errors).length,
+        [isDirty, isValid, isValidating, errors],
+    );
 
     React.useEffect(() => {
         reset(defaultValues);
@@ -116,12 +109,27 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
                 : await createCatalog(catalogData);
 
             if ('data' in res) {
+                setValue?.({
+                    active: true,
+                    message: currentCatalog ? MESSAGES.CATALOG.UPDATE : MESSAGES.CATALOG.CREATE,
+                    severity: 'success',
+                });
                 setClientData?.(res.data);
                 onClose();
                 reset(defaultValues);
             }
         },
-        [client?.id, currentCatalog, updateCatalog, createCatalog, setClientData, onClose, reset, defaultValues],
+        [
+            client?.id,
+            currentCatalog,
+            updateCatalog,
+            createCatalog,
+            setValue,
+            setClientData,
+            onClose,
+            reset,
+            defaultValues,
+        ],
     );
 
     return (
@@ -134,39 +142,54 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
                     <CloseIcon />
                 </IconButton>
                 <form css={styles.form} onSubmit={handleSubmit(onSubmit)}>
-                    {!currentCatalog && (
-                        <FormControl css={styles.input}>
+                    <Controller
+                        name="name"
+                        control={control}
+                        render={({ field }) => (
                             <TextField
+                                value={field.value}
                                 size="small"
-                                disabled={isLoading}
+                                disabled={isLoading || !!currentCatalog}
                                 label="Name"
-                                {...register('name', { required: true })}
+                                {...register('name')}
+                                onChange={(event) => {
+                                    field.onChange(event.target.value);
+                                }}
                                 helperText={errors.name?.message ?? ''}
                             />
-                        </FormControl>
-                    )}
-                    <FormControl css={styles.input}>
-                        <TextField
-                            size="small"
-                            defaultValue={defaultValues?.vertical}
-                            select
-                            label="Variant"
-                            disabled={isLoading}
-                            {...register('vertical', { required: true })}
-                            css={styles.select}
-                            helperText={errors.vertical?.message ?? ''}
-                        >
-                            <MenuItem value="home">Home</MenuItem>
-                            <MenuItem value="general">General</MenuItem>
-                            <MenuItem value="fashion">Fashion</MenuItem>
-                        </TextField>
-                    </FormControl>
-                    <FormControlLabel
-                        control={
-                            <Checkbox {...register('isPrimary')} checked={isPrimary[0] || false} color="primary" />
-                        }
-                        label="Primary"
+                        )}
                     />
+                    <Controller
+                        name="vertical"
+                        control={control}
+                        render={({ field }) => (
+                            <TextField
+                                size="small"
+                                defaultValue={field.value}
+                                select
+                                label="Vertical"
+                                {...register('vertical')}
+                                disabled={isLoading || !!currentCatalog}
+                                helperText={errors.vertical?.message ?? ''}
+                            >
+                                <MenuItem value="home">Home</MenuItem>
+                                <MenuItem value="general">General</MenuItem>
+                                <MenuItem value="fashion">Fashion</MenuItem>
+                            </TextField>
+                        )}
+                    />
+                    <Box display="flex" alignItems="center" gap={1}>
+                        <Controller
+                            name="isPrimary"
+                            control={control}
+                            render={({ field }) => (
+                                <Checkbox {...register('isPrimary')} checked={field.value || false} color="primary" />
+                            )}
+                        />
+                        <Typography fontWeight={300} variant="body1">
+                            Primary
+                        </Typography>
+                    </Box>
 
                     <Button disabled={isSubmitDisabled} variant="contained" type="submit" css={styles.button}>
                         Save

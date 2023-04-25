@@ -4,7 +4,13 @@ import { css } from '@emotion/react';
 import { ICatalog } from '@myworkspace/common';
 import { Box, Button, Chip, Tooltip, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import type { GridCellParams, GridColDef } from '@mui/x-data-grid';
+import type {
+    GridCellParams,
+    GridColDef,
+    GridRowSelectionModel,
+    GridCallbackDetails,
+    GridInputRowSelectionModel,
+} from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
@@ -34,13 +40,23 @@ const styles = {
 
 interface IProps {
     data?: ICatalog[];
+    rowSelectionModel: string[];
+    onRowSelectionModelChange: React.Dispatch<React.SetStateAction<string[]>>;
     onAdd: () => void;
     onDelete: (catalogIds: string[]) => void;
     onEdit: (projectId?: string) => void;
     isLoading: boolean;
 }
 
-export const Table: React.FC<IProps> = ({ data, onAdd, onDelete, onEdit, isLoading }) => {
+export const Table: React.FC<IProps> = ({
+    data,
+    rowSelectionModel,
+    onRowSelectionModelChange,
+    onAdd,
+    onDelete,
+    onEdit,
+    isLoading,
+}) => {
     const columns: GridColDef<ICatalog>[] = React.useMemo(
         () => [
             {
@@ -96,15 +112,22 @@ export const Table: React.FC<IProps> = ({ data, onAdd, onDelete, onEdit, isLoadi
         [onEdit, onDelete],
     );
 
+    const handleRowSelectionChange = (rowSelectionModel: GridRowSelectionModel, details: GridCallbackDetails<any>) => {
+        onRowSelectionModelChange(rowSelectionModel as string[]);
+    };
+
     return data?.length ? (
         <DataGrid
+            rowSelectionModel={rowSelectionModel as GridInputRowSelectionModel}
+            checkboxSelection
+            disableRowSelectionOnClick
+            onRowSelectionModelChange={handleRowSelectionChange}
             css={styles.table}
             rows={data}
             columns={columns}
             hideFooter={true}
             autoHeight={true}
             disableColumnMenu={true}
-            disableRowSelectionOnClick
             sortingMode="client"
             loading={isLoading}
             getRowId={(row) => row.id}

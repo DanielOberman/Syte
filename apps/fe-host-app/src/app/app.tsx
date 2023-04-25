@@ -15,32 +15,35 @@ import { NotFoundPage } from './components/not-found-page';
 import { CatalogsPage } from './components/catalogs-page';
 import { RegisterPage } from './components/register-page';
 import { UserInfo } from './components/user-info';
+import { SnackbarProvider } from './hooks/useSnackBar';
 
 export const App: React.FC = () => (
     <BrowserRouter>
-        <Theme>
-            <Provider store={store}>
-                <AuthProvider>
-                    <Routes>
-                        <Route element={<PageLayout header={<HeaderLayout />} />}>
-                            <Route element={<LoginPage />} path={APP_ROUTES.CLIENT.LOGIN.PATH} />
-                        </Route>
-                        <Route element={<PageLayout header={<HeaderLayout rightSide={<UserInfo />} />} />}>
-                            <Route element={<RegisterPage />} path={APP_ROUTES.CLIENT.REGISTER.PATH} />
-                        </Route>
-                        <Route
-                            element={
-                                <ProtectedRoute>
-                                    <PageLayout header={<HeaderLayout rightSide={<UserInfo />} />} />
-                                </ProtectedRoute>
-                            }
-                        >
-                            <Route element={<CatalogsPage />} path={APP_ROUTES.CATALOGS.PATH} />
-                        </Route>
-                        <Route path="*" element={<NotFoundPage />} />
-                    </Routes>
-                </AuthProvider>
-            </Provider>
-        </Theme>
+        <SnackbarProvider>
+            <Theme>
+                <Provider store={store}>
+                    <AuthProvider>
+                        <Routes>
+                            <Route element={<PageLayout header={<HeaderLayout />} />}>
+                                <Route element={<LoginPage />} path={APP_ROUTES.CLIENT.LOGIN.PATH} />
+                            </Route>
+                            <Route element={<PageLayout header={<HeaderLayout />} />}>
+                                <Route element={<RegisterPage />} path={APP_ROUTES.CLIENT.REGISTER.PATH} />
+                            </Route>
+                            <Route
+                                element={
+                                    <ProtectedRoute>
+                                        <PageLayout header={<HeaderLayout rightSide={<UserInfo />} />} />
+                                    </ProtectedRoute>
+                                }
+                            >
+                                <Route element={<CatalogsPage />} path={APP_ROUTES.CATALOGS.PATH} />
+                            </Route>
+                            <Route path="*" element={<NotFoundPage />} />
+                        </Routes>
+                    </AuthProvider>
+                </Provider>
+            </Theme>
+        </SnackbarProvider>
     </BrowserRouter>
 );

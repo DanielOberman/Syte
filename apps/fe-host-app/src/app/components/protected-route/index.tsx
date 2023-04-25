@@ -12,7 +12,7 @@ export const ProtectedRoute: React.FC<PropsWithChildren> = ({ children }) => {
 
     if ('error' in client) {
         if (client.error?.status === 401 || client.error?.status === 403) {
-            return <Navigate to={APP_ROUTES.CLIENT.LOGIN.PATH} />;
+            return <Navigate to={APP_ROUTES.CLIENT.REGISTER.PATH} />;
         } else if (client.error?.status === 400) {
             return <Navigate to={APP_ROUTES.CLIENT.REGISTER.PATH} />;
         }

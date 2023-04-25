@@ -6,9 +6,12 @@ import { Box } from '@mui/material';
 import { useAuth } from '../../hooks/useAuth';
 import { useDeleteCatalogMutation } from '../../features/client/api';
 import { CatalogModal } from '../catalog-modal';
+import { useSnackbar } from '../../hooks/useSnackBar';
 
 import { Title } from './title';
 import { Table } from './table';
+import { Snackbar } from '../Snackbar';
+import { MESSAGES } from '@myworkspace/common';
 
 const styles = {
     empty: {
@@ -24,7 +27,8 @@ export const CatalogsPage: React.FC = () => {
     const [modalOpen, setModalOpen] = React.useState(false);
     const [currentCatalogId, setCurrentCatalogId] = React.useState<string | null>(null);
     const [deleteCatalog, { isLoading: isDeleteLoading }] = useDeleteCatalogMutation();
-
+    const [rowSelectionModel, setRowSelectionModel] = React.useState<string[]>([]);
+    const { value, setValue } = useSnackbar();
     const isLoading = isClienLoading || isFetching || isDeleteLoading;
     const clientData = React.useMemo(() => client, [client]);
 
@@ -38,6 +42,33 @@ export const CatalogsPage: React.FC = () => {
         setCurrentCatalogId(null);
     };
 
+    const handleRowSelectionDelete = () => {
+        const clientId = client?.id;
+
+        const isPrimaryCatalogExists = client?.catalogs.some((catalog) => {
+            return catalog.isPrimary || rowSelectionModel.includes(catalog.id.toString());
+        });
+
+        if (isPrimaryCatalogExists) {
+            setValue?.({ active: true, message: MESSAGES.CATALOG.PRIMARY, severity: 'warning' });
+            setRowSelectionModel([]);
+            return;
+        }
+
+        if (clientId) {
+            deleteCatalog({
+                clientId,
+                catalogIds: rowSelectionModel,
+            }).then((res) => {
+                if ('data' in res) {
+                    setValue?.({ active: true, message: MESSAGES.CATALOG.DELETE, severity: 'success' });
+                    setClientData?.(res.data);
+                    setRowSelectionModel([]);
+                }
+            });
+        }
+    };
+
     const handleCatalogDelete = (catalogIds: string[]) => {
         const clientId = clientData?.id;
 
@@ -47,18 +78,27 @@ export const CatalogsPage: React.FC = () => {
                 catalogIds,
             }).then((res) => {
                 if ('data' in res) {
+                    setValue?.({ active: true, message: MESSAGES.CATALOG.DELETE, severity: 'success' });
                     setClientData?.(res.data);
+                    setRowSelectionModel([]);
                 }
             });
         }
     };
+    console.log();
 
     const content = isLoading ? (
         <CircularProgress />
     ) : (
         <>
-            <Title onAdd={handleOpenModal} showButton={!!clientData?.catalogs?.length} />
+            <Title
+                actionTitle={rowSelectionModel?.length ? 'Delete catalogs' : 'Create catalog'}
+                onClick={rowSelectionModel?.length ? handleRowSelectionDelete : handleOpenModal}
+                showButton={!!clientData?.catalogs?.length}
+            />
             <Table
+                rowSelectionModel={rowSelectionModel}
+                onRowSelectionModelChange={setRowSelectionModel}
                 onAdd={handleOpenModal}
                 onDelete={handleCatalogDelete}
                 onEdit={handleOpenModal}
@@ -66,6 +106,7 @@ export const CatalogsPage: React.FC = () => {
                 isLoading={isLoading}
             />
             <CatalogModal onOpen={modalOpen} onClose={handleCloseModal} currentCatalogId={currentCatalogId} />
+            {value?.active && <Snackbar value={value} onChange={setValue} />}
         </>
     );
 

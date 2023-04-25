@@ -1,4 +1,4 @@
-import { EVertical } from './enums';
+import { AlertColor } from '@mui/material';
 
 export interface ICatalog {
     id: string;
@@ -38,4 +38,10 @@ export interface ICatalogUpdate {
     name: string;
     vertical: string;
     isPrimary: boolean;
+}
+
+export interface ISnackbar {
+    active: boolean;
+    message: string;
+    severity: AlertColor;
 }
