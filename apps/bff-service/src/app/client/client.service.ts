@@ -9,6 +9,7 @@ import { ClientLoginDto } from './dto/client-login.dto';
 import { toClientDto } from './mappers';
 import { ClientModel } from './models/client.model';
 import { CatalogModel } from '../catalog/models/catalog.model';
+import { MESSAGE } from '@myworkspace/common';
 
 @Injectable()
 export class ClientService {
@@ -22,11 +23,11 @@ export class ClientService {
     async login({ email, password }: ClientLoginDto): Promise<ClientDto> {
         const client = await this.clientModel.findOne({ email }).exec();
 
-        if (!client) throw new HttpException('Client not found', HttpStatus.NOT_FOUND);
+        if (!client) throw new HttpException(MESSAGE.CLIENT.NOT_FOUND, HttpStatus.NOT_FOUND);
 
         const isEqual = await compare(password, client.password);
 
-        if (!isEqual) throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+        if (!isEqual) throw new HttpException(MESSAGE.CLIENT.INVALID_CREDENTIALS, HttpStatus.FORBIDDEN);
 
         return toClientDto(client);
     }
@@ -36,7 +37,7 @@ export class ClientService {
 
         const isClientExist = await this.clientModel.findOne({ email }).exec();
 
-        if (isClientExist) throw new HttpException('Client already exists', HttpStatus.UNAUTHORIZED);
+        if (isClientExist) throw new HttpException(MESSAGE.CLIENT.EXIST, HttpStatus.FORBIDDEN);
 
         const salt = await genSalt(10);
         const hashPassword = await hash(password, salt);
@@ -54,7 +55,7 @@ export class ClientService {
     async findOne(id: string): Promise<ClientDto> {
         const client = await this.clientModel.findOne({ _id: id }).exec();
 
-        if (!client) throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+        if (!client) throw new HttpException(MESSAGE.CLIENT.INVALID_CREDENTIALS, HttpStatus.FORBIDDEN);
 
         return toClientDto(client);
     }

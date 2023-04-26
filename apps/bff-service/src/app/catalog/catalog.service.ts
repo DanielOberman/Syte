@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -10,6 +10,7 @@ import { CatalogDto } from './dto/catalog.dto';
 import { DeleteCatalogDto } from './dto/delete-catalog.dto';
 import { CatalogModel } from './models/catalog.model';
 import { CreateCatalogDto } from './dto/create-catalog.dto';
+import { MESSAGE } from '@myworkspace/common';
 
 @Injectable()
 export class CatalogService {
@@ -25,9 +26,9 @@ export class CatalogService {
 
         const client = await this.clientModel.findById(clientId).exec();
 
-        if (!client) {
-            throw new NotFoundException('Client not found');
-        }
+        const nameExist = client?.catalogs.find((i) => i.name === name);
+
+        if (nameExist) throw new HttpException(MESSAGE.CATALOG.EXIST, HttpStatus.FORBIDDEN);
 
         if (isPrimary) {
             const existPrimaryCategory = client.catalogs.find(

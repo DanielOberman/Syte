@@ -4,9 +4,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { TextField, Button, Box, Typography } from '@mui/material';
 
 import { schema } from './schema';
-import { IClient } from '@myworkspace/common';
+import { CODE, IClient, MESSAGE } from '@myworkspace/common';
 import { useClientLoginMutation } from '../../features/client/api';
 import { APP_ROUTES } from '../../routes/consts';
+import { useSnackbar } from '../../hooks/useSnackBar';
+import { Snackbar } from '../Snackbar';
 
 export const LoginPage: React.FC = () => {
     const {
@@ -21,17 +23,26 @@ export const LoginPage: React.FC = () => {
         criteriaMode: 'all',
     });
 
+    const { value, setValue } = useSnackbar();
     const { isDirty, isValid, isValidating } = useFormState({ control });
     const isSubmitDisabled = !isDirty || !isValid || isValidating;
 
     const [clientLogin, { isLoading }] = useClientLoginMutation();
 
     const onSubmit = (data: IClient) => {
-        clientLogin(data).then((res) => {
-            if ('data' in res) {
-                window.location.pathname = APP_ROUTES.CATALOGS.PATH;
-            }
-        });
+        clientLogin(data)
+            .then((res) => {
+                if ('error' in res && 'status' in res.error && res.error.status === CODE.NOT_FOUND) {
+                    setValue?.({
+                        active: true,
+                        message: MESSAGE.CLIENT.NOT_FOUND,
+                        severity: 'error',
+                    });
+                } else if ('data' in res) {
+                    window.location.pathname = APP_ROUTES.CATALOGS.PATH;
+                }
+            })
+            .catch((err) => console.log(err));
     };
 
     return (
@@ -78,6 +89,7 @@ export const LoginPage: React.FC = () => {
                     </Button>
                 </Box>
             </form>
+            {value?.active && <Snackbar value={value} onChange={setValue} />}
         </Box>
     );
 };

@@ -3,7 +3,6 @@
     "version": "0.0.0",
     "license": "MIT",
     "scripts": {
-        "docker:down": "docker-compose stop mongo",
         "docker:up:db": "docker-compose up -d",
         "all:watch": "nx run-many --parallel --target=serve --projects=bff-service,fe-host-app",
         "bff:watch": "nx run bff-service:serve",

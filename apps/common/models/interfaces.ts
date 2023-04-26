@@ -16,7 +16,7 @@ export interface IClient {
 
 export interface IClientError {
     error: {
-        status: number;
+        originalStatus: number;
     };
 }
 

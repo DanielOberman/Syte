@@ -11,7 +11,7 @@ import { useSnackbar } from '../../hooks/useSnackBar';
 import { Title } from './title';
 import { Table } from './table';
 import { Snackbar } from '../Snackbar';
-import { MESSAGES } from '@myworkspace/common';
+import { MESSAGE } from '@myworkspace/common';
 
 const styles = {
     empty: {
@@ -45,12 +45,12 @@ export const CatalogsPage: React.FC = () => {
     const handleRowSelectionDelete = () => {
         const clientId = client?.id;
 
-        const isPrimaryCatalogExists = client?.catalogs.some((catalog) => {
-            return catalog.isPrimary || rowSelectionModel.includes(catalog.id.toString());
-        });
+        const isPrimaryCatalogExists = client?.catalogs.find(
+            (catalog) => catalog.isPrimary && rowSelectionModel.includes(catalog.id.toString()),
+        );
 
         if (isPrimaryCatalogExists) {
-            setValue?.({ active: true, message: MESSAGES.CATALOG.PRIMARY, severity: 'warning' });
+            setValue?.({ active: true, message: MESSAGE.CATALOG.PRIMARY, severity: 'warning' });
             setRowSelectionModel([]);
             return;
         }
@@ -61,7 +61,7 @@ export const CatalogsPage: React.FC = () => {
                 catalogIds: rowSelectionModel,
             }).then((res) => {
                 if ('data' in res) {
-                    setValue?.({ active: true, message: MESSAGES.CATALOG.DELETE, severity: 'success' });
+                    setValue?.({ active: true, message: MESSAGE.CATALOG.DELETE, severity: 'success' });
                     setClientData?.(res.data);
                     setRowSelectionModel([]);
                 }
@@ -78,7 +78,7 @@ export const CatalogsPage: React.FC = () => {
                 catalogIds,
             }).then((res) => {
                 if ('data' in res) {
-                    setValue?.({ active: true, message: MESSAGES.CATALOG.DELETE, severity: 'success' });
+                    setValue?.({ active: true, message: MESSAGE.CATALOG.DELETE, severity: 'success' });
                     setClientData?.(res.data);
                     setRowSelectionModel([]);
                 }

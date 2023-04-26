@@ -29,7 +29,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
 
     React.useEffect(() => {
         if (data) setClientData(data);
-    }, [data, error]);
+    }, [data]);
 
     const ctx: IAuthContext = React.useMemo(
         () => ({ client, error, setClientData, isLoading, isFetching }),

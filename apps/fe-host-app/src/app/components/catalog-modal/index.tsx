@@ -6,7 +6,7 @@ import { css } from '@emotion/react';
 import { useForm, useFormState, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { schema } from './schema';
-import { ICatalogCreate, MESSAGES } from '@myworkspace/common';
+import { CODE, ICatalogCreate, MESSAGE } from '@myworkspace/common';
 import { useCreateCatalogMutation, useUpdateCatalogMutation } from '../../features/client/api';
 import { useAuth } from '../../hooks/useAuth';
 import { useSnackbar } from '../../hooks/useSnackBar';
@@ -108,10 +108,18 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
                 ? await updateCatalog({ id: currentCatalog.id, ...catalogData })
                 : await createCatalog(catalogData);
 
+            if ('error' in res && 'status' in res.error && res.error.status === CODE.EXIST) {
+                setValue?.({
+                    active: true,
+                    message: MESSAGE.CATALOG.EXIST,
+                    severity: 'error',
+                });
+            }
+
             if ('data' in res) {
                 setValue?.({
                     active: true,
-                    message: currentCatalog ? MESSAGES.CATALOG.UPDATE : MESSAGES.CATALOG.CREATE,
+                    message: currentCatalog ? MESSAGE.CATALOG.UPDATE : MESSAGE.CATALOG.CREATE,
                     severity: 'success',
                 });
                 setClientData?.(res.data);
