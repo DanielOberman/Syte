@@ -10,8 +10,14 @@ import { IClient, IClientError } from '@myworkspace/common';
 export const ProtectedRoute: React.FC<PropsWithChildren> = ({ children }) => {
     const client = useAuth() as IClient | IClientError;
 
-    if ('error' in client && client.error?.originalStatus > 210) {
-        return <Navigate to={APP_ROUTES.CLIENT.REGISTER.PATH} />;
+    try {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        if ('error' in client && 'data' in client.error && client?.error.data?.status > 210) {
+            return <Navigate to={APP_ROUTES.CLIENT.REGISTER.PATH} />;
+        }
+    } catch (err) {
+        console.log(err);
     }
 
     return <div>{children}</div>;

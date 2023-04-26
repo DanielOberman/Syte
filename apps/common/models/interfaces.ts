@@ -16,7 +16,10 @@ export interface IClient {
 
 export interface IClientError {
     error: {
-        originalStatus: number;
+        // originalStatus?: number;
+        data?: {
+            status?: number;
+        };
     };
 }
 
