@@ -99,8 +99,7 @@ export const Table: React.FC<IProps> = ({
                             <Button onClick={() => onEdit(id as string)}>
                                 <EditIcon />
                             </Button>
-
-                            {id && !value && (
+                            {id && !value && data && data.length > 1 && (
                                 <Button onClick={() => onDelete([id as string])}>
                                     <DeleteOutlineIcon color="warning" />
                                 </Button>
@@ -110,7 +109,7 @@ export const Table: React.FC<IProps> = ({
                 ),
             },
         ],
-        [onEdit, onDelete],
+        [data, onEdit, onDelete],
     );
 
     /** Select rows for deleting */

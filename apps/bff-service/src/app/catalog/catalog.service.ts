@@ -87,6 +87,10 @@ export class CatalogService {
         const { clientId, catalogIds } = createCatalogDto;
         const client = await this.clientModel.findOne({ _id: clientId }).exec();
 
+        if (catalogIds.length === client.catalogs.length) {
+            throw new HttpException(MESSAGE.CATALOG.DELETE_ALL, HttpStatus.FORBIDDEN);
+        }
+
         client.catalogs = client.catalogs.filter((catalog) => {
             return catalog.isPrimary || !catalogIds.includes(catalog.id.toString());
         });

@@ -1,16 +1,20 @@
 import { css } from '@emotion/react';
 import { useForm, useFormState } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { TextField, Button, Box, Typography } from '@mui/material';
+import { TextField, Button, Box, Typography, CircularProgress } from '@mui/material';
 
-import { schema } from './schema';
 import { IClient, MESSAGE, CODE } from '@myworkspace/common';
 import { useClientRegisterMutation } from '../../features/client/api';
 import { APP_ROUTES } from '../../routes/consts';
 import { useSnackbar } from '../../hooks/useSnackBar';
 import { Snackbar } from '../Snackbar';
+import { useAuth } from '../../hooks/useAuth';
+
+import { schema } from './schema';
 
 export const RegisterPage: React.FC = () => {
+    const { client, isFetching: isClientFetching, isLoading: isClientLoading } = useAuth();
+
     const {
         register,
         handleSubmit,
@@ -24,9 +28,9 @@ export const RegisterPage: React.FC = () => {
     });
     const { value, setValue } = useSnackbar();
     const { isDirty, isValid, isValidating } = useFormState({ control });
-    const isSubmitDisabled = !isDirty || !isValid || isValidating;
+    const [clientRegister, { isLoading: isRegisterLoading }] = useClientRegisterMutation();
 
-    const [clientRegister, { isLoading }] = useClientRegisterMutation();
+    const isSubmitDisabled = !isDirty || !isValid || isValidating || isRegisterLoading;
 
     const onSubmit = (data: IClient) => {
         clientRegister(data)
@@ -50,8 +54,13 @@ export const RegisterPage: React.FC = () => {
             );
     };
 
-    return (
-        <Box display="flex" height="100%" alignItems="center">
+    if (client) window.location.pathname = APP_ROUTES.CATALOGS.PATH;
+    const isLoading = isClientFetching || isClientLoading;
+
+    const content = isLoading ? (
+        <CircularProgress />
+    ) : (
+        <>
             <form
                 css={css`
                     display: flex;
@@ -68,7 +77,7 @@ export const RegisterPage: React.FC = () => {
                 </Typography>
 
                 <TextField
-                    disabled={isLoading}
+                    disabled={isRegisterLoading}
                     label="Email"
                     type="email"
                     variant="outlined"
@@ -77,7 +86,7 @@ export const RegisterPage: React.FC = () => {
                     {...register('email')}
                 />
                 <TextField
-                    disabled={isLoading}
+                    disabled={isRegisterLoading}
                     label="Password"
                     type="password"
                     variant="outlined"
@@ -86,15 +95,25 @@ export const RegisterPage: React.FC = () => {
                     {...register('password')}
                 />
                 <Box display="flex" gap={4} justifyContent="flex-end">
-                    <Button variant="text" onClick={() => (window.location.pathname = APP_ROUTES.CLIENT.LOGIN.PATH)}>
+                    <Button
+                        variant="text"
+                        onClick={() => (window.location.pathname = APP_ROUTES.CLIENT.LOGIN.PATH)}
+                        disabled={isRegisterLoading}
+                    >
                         Login
                     </Button>
-                    <Button variant="contained" type="submit" disabled={isSubmitDisabled || isLoading}>
+                    <Button variant="contained" type="submit" disabled={isSubmitDisabled}>
                         Sign Up
                     </Button>
                 </Box>
             </form>
             {value?.active && <Snackbar value={value} onChange={setValue} />}
+        </>
+    );
+
+    return (
+        <Box width="100%" display="flex" height="100%" justifyContent="center" alignItems="center">
+            {content}
         </Box>
     );
 };

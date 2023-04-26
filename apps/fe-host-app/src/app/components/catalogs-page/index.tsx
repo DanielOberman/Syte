@@ -12,6 +12,7 @@ import { Title } from './title';
 import { Table } from './table';
 import { Snackbar } from '../Snackbar';
 import { MESSAGE } from '@myworkspace/common';
+import { canDeleteCatalog } from './utils';
 
 const styles = {
     empty: {
@@ -45,6 +46,11 @@ export const CatalogsPage: React.FC = () => {
     const handleRowSelectionDelete = () => {
         const clientId = client?.id;
 
+        if (!canDeleteCatalog(clientData?.catalogs, rowSelectionModel)) {
+            setValue?.({ active: true, message: MESSAGE.CATALOG.DELETE_ALL, severity: 'warning' });
+            return;
+        }
+
         const isPrimaryCatalogExists = client?.catalogs.find(
             (catalog) => catalog.isPrimary && rowSelectionModel.includes(catalog.id.toString()),
         );
@@ -71,6 +77,11 @@ export const CatalogsPage: React.FC = () => {
 
     const handleCatalogDelete = (catalogIds: string[]) => {
         const clientId = clientData?.id;
+
+        if (!canDeleteCatalog(clientData?.catalogs, catalogIds)) {
+            setValue?.({ active: true, message: MESSAGE.CATALOG.DELETE_ALL, severity: 'warning' });
+            return;
+        }
 
         if (clientId) {
             deleteCatalog({

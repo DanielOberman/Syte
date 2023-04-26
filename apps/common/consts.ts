@@ -5,6 +5,7 @@ export const MESSAGE = {
         CREATE: 'Catalog created',
         PRIMARY: 'Cannot delete directory with primary status',
         EXIST: 'Catalog with the same name already exists',
+        DELETE_ALL: 'Deleting all directories is prohibited.',
     },
     CLIENT: {
         EXIST: 'Client already exists',

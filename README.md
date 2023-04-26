@@ -26,3 +26,6 @@ npm run docker:up:db
 3. Start the local development server.
 
 npm run start
+
+4. Open localhost
+http://localhost:4200/
