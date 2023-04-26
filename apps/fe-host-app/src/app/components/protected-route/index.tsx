@@ -5,15 +5,16 @@ import { Navigate } from 'react-router-dom';
 import { APP_ROUTES } from '../../routes/consts';
 
 import { useAuth } from '../../hooks/useAuth';
-import { IClient, IClientError } from '@myworkspace/common';
+import { IClientError } from '@myworkspace/common';
 
 export const ProtectedRoute: React.FC<PropsWithChildren> = ({ children }) => {
-    const client = useAuth() as IClient | IClientError;
+    const client = useAuth() as IClientError;
 
     try {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        if ('error' in client && 'data' in client.error && client?.error.data?.status > 210) {
+        if (
+            (client?.error?.status && client?.error.status === 403) ||
+            (client?.error?.originalStatus && client.error.originalStatus > 300)
+        ) {
             return <Navigate to={APP_ROUTES.CLIENT.REGISTER.PATH} />;
         }
     } catch (err) {

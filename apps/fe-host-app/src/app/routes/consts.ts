@@ -1,7 +1,7 @@
 /** App routing. */
 export const APP_ROUTES = {
     CATALOGS: {
-        PATH: '/catalogs',
+        PATH: '/',
         TITLE: 'catalogs',
     },
     CLIENT: {

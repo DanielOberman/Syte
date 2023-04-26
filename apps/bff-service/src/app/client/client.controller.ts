@@ -1,9 +1,21 @@
-import { Body, Controller, Get, Post, Res, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Post,
+    Res,
+    Req,
+    UnauthorizedException,
+    UseGuards,
+    HttpException,
+    HttpStatus,
+} from '@nestjs/common';
 import { Response, Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 
 import { ClientService } from './client.service';
 import { AuthGuard } from '../guards/authGuard';
+import { MESSAGE } from '@myworkspace/common';
 
 @Controller('client')
 export class ClientController {
@@ -89,7 +101,7 @@ export class ClientController {
             const cookie = request.cookies['jwt'];
             const decoded = await this.jwtService.verifyAsync(cookie);
 
-            if (!decoded) throw new UnauthorizedException();
+            if (!decoded) throw new HttpException(MESSAGE.CLIENT.INVALID_CREDENTIALS, HttpStatus.FORBIDDEN);
 
             const client = await this.clientService.findOne(decoded.id as string);
             return client;
