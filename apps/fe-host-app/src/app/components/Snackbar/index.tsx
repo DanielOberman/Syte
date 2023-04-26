@@ -8,6 +8,7 @@ interface IProps {
     onChange: ((value?: ISnackbar | undefined) => void) | undefined;
 }
 
+/** Notifications */
 export const Snackbar: React.FC<IProps> = ({ value, onChange }) => (
     <MuiSnackbar open={value?.active} autoHideDuration={4000} onClose={() => onChange?.(undefined)}>
         <Alert severity={value?.severity} sx={{ width: '100%' }}>

@@ -11,6 +11,12 @@ export const MESSAGE = {
         NOT_FOUND: 'Client not found',
         INVALID_CREDENTIALS: 'Invalid credentials',
     },
+    REGISTER: {
+        ERROR: 'Failed to register. Please try again',
+    },
+    LOGIN: {
+        ERROR: 'Failed to login. Please try again',
+    },
 };
 
 export const CODE = {

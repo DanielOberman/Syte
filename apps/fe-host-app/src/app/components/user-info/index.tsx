@@ -13,6 +13,7 @@ interface IMenuItem {
     icon?: React.ReactElement;
 }
 
+/** User panel  */
 export const UserInfo = () => {
     const userRef = React.useRef(null);
 

@@ -41,7 +41,13 @@ export const RegisterPage: React.FC = () => {
                     window.location.pathname = APP_ROUTES.CATALOGS.PATH;
                 }
             })
-            .catch((err) => console.log(err));
+            .catch(() =>
+                setValue?.({
+                    active: true,
+                    message: MESSAGE.REGISTER.ERROR,
+                    severity: 'error',
+                }),
+            );
     };
 
     return (

@@ -5,11 +5,13 @@ import IconButton from '@mui/material/IconButton';
 import { css } from '@emotion/react';
 import { useForm, useFormState, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { schema } from './schema';
 import { CODE, ICatalogCreate, MESSAGE } from '@myworkspace/common';
+
 import { useCreateCatalogMutation, useUpdateCatalogMutation } from '../../features/client/api';
 import { useAuth } from '../../hooks/useAuth';
 import { useSnackbar } from '../../hooks/useSnackBar';
+
+import { schema } from './schema';
 
 interface IProps {
     onOpen: boolean;
@@ -47,14 +49,21 @@ const styles = {
     `,
 };
 
+/**
+ * Modal component used for adding or editing a catalog.
+ */
 export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalogId }) => {
+    /** Method to create a new catalog */
     const [createCatalog, { isLoading: isCreateLoading }] = useCreateCatalogMutation();
+    /** Method to update a new catalog */
     const [updateCatalog, { isLoading: isUpdateLoading }] = useUpdateCatalogMutation();
     const { setValue } = useSnackbar();
 
+    /** Get client info */
     const { client, setClientData, isLoading: isAuthLoading } = useAuth();
     const currentCatalog = client?.catalogs.find((i) => i.id === currentCatalogId);
 
+    /** Default values for the catalog form */
     const defaultValues = React.useMemo(() => {
         if (currentCatalog) {
             return {
@@ -66,6 +75,7 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
         return {};
     }, [currentCatalog]);
 
+    /** React-hook-form */
     const {
         register,
         handleSubmit,
@@ -85,6 +95,7 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
         [isDirty, isValid, isValidating, errors],
     );
 
+    /** Reset react-hook-form */
     React.useEffect(() => {
         reset(defaultValues);
     }, [defaultValues, reset]);

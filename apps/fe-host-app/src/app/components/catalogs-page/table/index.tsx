@@ -48,6 +48,7 @@ interface IProps {
     isLoading: boolean;
 }
 
+/** Table with catalogs data */
 export const Table: React.FC<IProps> = ({
     data,
     rowSelectionModel,
@@ -112,6 +113,7 @@ export const Table: React.FC<IProps> = ({
         [onEdit, onDelete],
     );
 
+    /** Select rows for deleting */
     const handleRowSelectionChange = (rowSelectionModel: GridRowSelectionModel, details: GridCallbackDetails<any>) => {
         onRowSelectionModelChange(rowSelectionModel as string[]);
     };

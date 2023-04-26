@@ -85,7 +85,6 @@ export const CatalogsPage: React.FC = () => {
             });
         }
     };
-    console.log();
 
     const content = isLoading ? (
         <CircularProgress />

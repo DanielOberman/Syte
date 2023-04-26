@@ -10,6 +10,7 @@ import { APP_ROUTES } from '../../routes/consts';
 import { useSnackbar } from '../../hooks/useSnackBar';
 import { Snackbar } from '../Snackbar';
 
+/** Login page */
 export const LoginPage: React.FC = () => {
     const {
         register,
@@ -24,9 +25,13 @@ export const LoginPage: React.FC = () => {
     });
 
     const { value, setValue } = useSnackbar();
+    /** React-hook-form */
     const { isDirty, isValid, isValidating } = useFormState({ control });
+
+    /** Desable inputs and button */
     const isSubmitDisabled = !isDirty || !isValid || isValidating;
 
+    /** Login */
     const [clientLogin, { isLoading }] = useClientLoginMutation();
 
     const onSubmit = (data: IClient) => {
@@ -42,7 +47,13 @@ export const LoginPage: React.FC = () => {
                     window.location.pathname = APP_ROUTES.CATALOGS.PATH;
                 }
             })
-            .catch((err) => console.log(err));
+            .catch(() =>
+                setValue?.({
+                    active: true,
+                    message: MESSAGE.LOGIN.ERROR,
+                    severity: 'error',
+                }),
+            );
     };
 
     return (

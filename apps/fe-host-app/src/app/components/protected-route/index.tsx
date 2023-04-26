@@ -7,9 +7,10 @@ import { APP_ROUTES } from '../../routes/consts';
 import { useAuth } from '../../hooks/useAuth';
 import { IClientError } from '@myworkspace/common';
 
+/** Component to protect the route if the client is not authorized */
 export const ProtectedRoute: React.FC<PropsWithChildren> = ({ children }) => {
     const client = useAuth() as IClientError;
-    console.log(client);
+
     try {
         if (
             (client?.error?.status && client?.error.status === 403) ||
