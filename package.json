@@ -3,7 +3,7 @@
     "version": "0.0.0",
     "license": "MIT",
     "scripts": {
-        "docker:up:db": "docker-compose up -d",
+        "docker:db": "docker-compose up -d",
         "start": "nx run-many --parallel --target=serve --projects=bff-service,fe-host-app",
         "bff:watch": "nx run bff-service:serve",
         "fe:watch": "nx run fe-host-app:serve"
