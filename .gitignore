@@ -8,9 +8,6 @@ tmp
 # dependencies
 node_modules
 
-# db
-mongo-data
-
 # IDEs and editors
 /.idea
 .project
