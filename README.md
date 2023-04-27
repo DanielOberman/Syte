@@ -12,7 +12,7 @@ The source code is organized as an https://nx.dev monorepository.
 
 #### Requirements
 
-* _[Node.js version 16.18.1](https://nodejs.org/download/release/v16.18.1/)_
+* _[Node.js version 16.18.1](https://nodejs.org/en/blog/release/v16.18.1)_
 * Installed and running  [Docker](https://docs.docker.com/engine/install/) service for your platform. (recommended is [Docker Desktop](https://www.docker.com/products/docker-desktop/) for full visual management)
 
 1. Install the required dependencies.
