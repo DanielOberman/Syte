@@ -1,8 +1,6 @@
-import { Body, Controller, Delete, Patch, Post, UseGuards } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Body, Controller, Delete, Patch, Post } from '@nestjs/common';
 
 import { CatalogService } from './catalog.service';
-import { AuthGuard } from '../guards/authGuard';
 import { ClientDto } from '../client/dto/client.dto';
 
 import { CatalogDto } from './dto/catalog.dto';
@@ -11,10 +9,9 @@ import { CreateCatalogDto } from './dto/create-catalog.dto';
 
 @Controller('catalog')
 export class CatalogController {
-    constructor(private readonly catalogService: CatalogService, private jwtService: JwtService) {}
+    constructor(private readonly catalogService: CatalogService) {}
 
     @Post('create')
-    @UseGuards(AuthGuard)
     async createCatalog(@Body() createCatalogDto: CreateCatalogDto): Promise<ClientDto> {
         const client = await this.catalogService.createCatalog(createCatalogDto);
 
@@ -22,7 +19,6 @@ export class CatalogController {
     }
 
     @Delete('delete')
-    @UseGuards(AuthGuard)
     async deleteCatalog(@Body() deleteCatalogDto: DeleteCatalogDto): Promise<ClientDto> {
         const client = await this.catalogService.deleteCatalogs(deleteCatalogDto);
 
@@ -30,9 +26,8 @@ export class CatalogController {
     }
 
     @Patch('udpate')
-    @UseGuards(AuthGuard)
     async editCatalog(@Body() editCatalogDto: CatalogDto): Promise<ClientDto> {
-        const client = await this.catalogService.udpateCatalog(editCatalogDto);
+        const client = await this.catalogService.updateCatalog(editCatalogDto);
 
         return client;
     }

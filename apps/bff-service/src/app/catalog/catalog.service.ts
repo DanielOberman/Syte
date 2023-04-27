@@ -53,7 +53,7 @@ export class CatalogService {
         return toClientDto(client);
     }
 
-    async udpateCatalog(editCatalogDto: CatalogDto): Promise<ClientDto> {
+    async updateCatalog(editCatalogDto: CatalogDto): Promise<ClientDto> {
         const { clientId, id, name, vertical, isPrimary } = editCatalogDto;
         const client = await this.clientModel.findOne({ _id: clientId }).exec();
 
