@@ -2,10 +2,11 @@ export const MESSAGE = {
     CATALOG: {
         DELETE: 'Catalog deleted',
         UPDATE: 'Catalog updated',
+        UPDATE_ERROR: 'At least 1 directory in the vertical must be primary',
         CREATE: 'Catalog created',
-        PRIMARY: 'Cannot delete directory with primary status',
+        PRIMARY: 'Cannot delete catalog with primary status',
         EXIST: 'Catalog with the same name already exists',
-        DELETE_ALL: 'Deleting all directories is prohibited.',
+        DELETE_ERROR: 'Primary catalog cannot be deleted',
     },
     CLIENT: {
         EXIST: 'Client already exists',

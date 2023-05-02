@@ -47,7 +47,7 @@ export const CatalogsPage: React.FC = () => {
         const clientId = client?.id;
 
         if (!canDeleteCatalog(clientData?.catalogs, rowSelectionModel)) {
-            setValue?.({ active: true, message: MESSAGE.CATALOG.DELETE_ALL, severity: 'warning' });
+            setValue?.({ active: true, message: MESSAGE.CATALOG.DELETE_ERROR, severity: 'warning' });
             return;
         }
 
@@ -79,7 +79,7 @@ export const CatalogsPage: React.FC = () => {
         const clientId = clientData?.id;
 
         if (!canDeleteCatalog(clientData?.catalogs, catalogIds)) {
-            setValue?.({ active: true, message: MESSAGE.CATALOG.DELETE_ALL, severity: 'warning' });
+            setValue?.({ active: true, message: MESSAGE.CATALOG.DELETE_ERROR, severity: 'warning' });
             return;
         }
 
@@ -115,7 +115,12 @@ export const CatalogsPage: React.FC = () => {
                 data={clientData?.catalogs}
                 isLoading={isLoading}
             />
-            <CatalogModal onOpen={modalOpen} onClose={handleCloseModal} currentCatalogId={currentCatalogId} />
+            <CatalogModal
+                data={clientData?.catalogs}
+                onOpen={modalOpen}
+                onClose={handleCloseModal}
+                currentCatalogId={currentCatalogId}
+            />
             {value?.active && <Snackbar value={value} onChange={setValue} />}
         </>
     );

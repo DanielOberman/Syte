@@ -31,13 +31,13 @@ export class CatalogService {
         if (nameExist) throw new HttpException(MESSAGE.CATALOG.EXIST, HttpStatus.FORBIDDEN);
 
         if (isPrimary) {
-            const existPrimaryCategory = client.catalogs.find(
-                (category) => category.vertical === vertical && category.isPrimary,
+            const existPrimaryCatalog = client.catalogs.find(
+                (catalog) => catalog.vertical === vertical && catalog.isPrimary,
             );
 
-            if (existPrimaryCategory) {
-                existPrimaryCategory.isPrimary = false;
-                await existPrimaryCategory.save();
+            if (existPrimaryCatalog) {
+                existPrimaryCatalog.isPrimary = false;
+                await existPrimaryCatalog.save();
             }
         }
 
@@ -64,13 +64,13 @@ export class CatalogService {
         }
 
         if (isPrimary) {
-            const existPrimaryCategory = client.catalogs.find(
-                (category) => category.vertical === vertical && category.isPrimary,
+            const existPrimaryCatalog = client.catalogs.find(
+                (catalog) => catalog.vertical === vertical && catalog.isPrimary,
             );
 
-            if (existPrimaryCategory) {
-                existPrimaryCategory.isPrimary = false;
-                await existPrimaryCategory.save();
+            if (existPrimaryCatalog) {
+                existPrimaryCatalog.isPrimary = false;
+                await existPrimaryCatalog.save();
             }
         }
 
@@ -88,7 +88,7 @@ export class CatalogService {
         const client = await this.clientModel.findOne({ _id: clientId }).exec();
 
         if (catalogIds.length === client.catalogs.length) {
-            throw new HttpException(MESSAGE.CATALOG.DELETE_ALL, HttpStatus.FORBIDDEN);
+            throw new HttpException(MESSAGE.CATALOG.DELETE_ERROR, HttpStatus.FORBIDDEN);
         }
 
         client.catalogs = client.catalogs.filter((catalog) => {

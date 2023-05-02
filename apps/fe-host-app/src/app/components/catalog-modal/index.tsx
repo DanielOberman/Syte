@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import { css } from '@emotion/react';
 import { useForm, useFormState, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { CODE, ICatalogCreate, MESSAGE } from '@myworkspace/common';
+import { CODE, ICatalog, ICatalogCreate, MESSAGE } from '@myworkspace/common';
 
 import { useCreateCatalogMutation, useUpdateCatalogMutation } from '../../features/client/api';
 import { useAuth } from '../../hooks/useAuth';
@@ -14,6 +14,7 @@ import { useSnackbar } from '../../hooks/useSnackBar';
 import { schema } from './schema';
 
 interface IProps {
+    data?: ICatalog[];
     onOpen: boolean;
     onClose: () => void;
     currentCatalogId: string | null;
@@ -52,7 +53,7 @@ const styles = {
 /**
  * Modal component used for adding or editing a catalog.
  */
-export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalogId }) => {
+export const CatalogModal: React.FC<IProps> = ({ data, onOpen, onClose, currentCatalogId }) => {
     /** Method to create a new catalog */
     const [createCatalog, { isLoading: isCreateLoading }] = useCreateCatalogMutation();
     /** Method to update a new catalog */
@@ -90,6 +91,7 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
         criteriaMode: 'all',
     });
     const { isDirty, isValid, isValidating } = useFormState({ control });
+
     const isSubmitDisabled = React.useMemo(
         () => !isDirty || !isValid || isValidating || !!Object.keys(errors).length,
         [isDirty, isValid, isValidating, errors],
@@ -103,16 +105,29 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
     const isLoading = isCreateLoading || isAuthLoading || isUpdateLoading;
 
     const onSubmit = React.useCallback(
-        async (data: Omit<ICatalogCreate, 'clientId'>) => {
+        async (value: Omit<ICatalogCreate, 'clientId'>) => {
             const clientId = client?.id ?? null;
 
             if (!clientId) {
                 return;
             }
 
+            if (currentCatalogId) {
+                const isCurrentCatalogPrimary = data?.find((i) => i.id === currentCatalogId && i.isPrimary);
+
+                if (isCurrentCatalogPrimary) {
+                    setValue?.({
+                        active: true,
+                        message: MESSAGE.CATALOG.UPDATE_ERROR,
+                        severity: 'warning',
+                    });
+                    return;
+                }
+            }
+
             const catalogData = {
                 clientId,
-                ...data,
+                ...value,
             };
 
             const res = currentCatalog
@@ -202,7 +217,15 @@ export const CatalogModal: React.FC<IProps> = ({ onOpen, onClose, currentCatalog
                             name="isPrimary"
                             control={control}
                             render={({ field }) => (
-                                <Checkbox {...register('isPrimary')} checked={field.value || false} color="primary" />
+                                <Checkbox
+                                    {...register('isPrimary')}
+                                    // onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                    //     console.log(event);
+                                    //     console.log(field.onChange);
+                                    // }}
+                                    checked={field.value || false}
+                                    color="primary"
+                                />
                             )}
                         />
                         <Typography fontWeight={300} variant="body1">
