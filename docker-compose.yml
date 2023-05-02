@@ -1,7 +1,7 @@
 version: '3'
 services:
   mongo:
-    image: mongo
+    image: mongo:latest
     container_name: mongo
     restart: always
     environment:
@@ -9,5 +9,3 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=admin
     ports:
       - 27017:27017
-    volumes:
-      - ./mongo-data:/data/db
