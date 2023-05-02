@@ -73,7 +73,7 @@ export const RegisterPage: React.FC = () => {
                 onSubmit={handleSubmit(onSubmit)}
             >
                 <Typography textAlign="start" variant="h3" fontWeight={300}>
-                    Register
+                    Sign up
                 </Typography>
 
                 <TextField
@@ -100,7 +100,7 @@ export const RegisterPage: React.FC = () => {
                         onClick={() => (window.location.pathname = APP_ROUTES.CLIENT.LOGIN.PATH)}
                         disabled={isRegisterLoading}
                     >
-                        Login
+                        Sign in
                     </Button>
                     <Button variant="contained" type="submit" disabled={isSubmitDisabled}>
                         Sign Up
