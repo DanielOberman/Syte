@@ -107,22 +107,19 @@ export const CatalogModal: React.FC<IProps> = ({ data, onOpen, onClose, currentC
     const onSubmit = React.useCallback(
         async (value: Omit<ICatalogCreate, 'clientId'>) => {
             const clientId = client?.id ?? null;
+            const isPrimaryCount = data?.filter((i) => i.isPrimary)?.length || [];
 
             if (!clientId) {
                 return;
             }
 
-            if (currentCatalogId) {
-                const isCurrentCatalogPrimary = data?.find((i) => i.id === currentCatalogId && i.isPrimary);
-
-                if (isCurrentCatalogPrimary) {
-                    setValue?.({
-                        active: true,
-                        message: MESSAGE.CATALOG.UPDATE_ERROR,
-                        severity: 'warning',
-                    });
-                    return;
-                }
+            if (isPrimaryCount === 1 && currentCatalog?.isPrimary && !value.isPrimary) {
+                setValue?.({
+                    active: true,
+                    message: MESSAGE.CATALOG.UPDATE_ERROR,
+                    severity: 'error',
+                });
+                return;
             }
 
             const catalogData = {
