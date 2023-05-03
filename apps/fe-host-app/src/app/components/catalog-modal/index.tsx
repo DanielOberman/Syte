@@ -113,7 +113,7 @@ export const CatalogModal: React.FC<IProps> = ({ data, onOpen, onClose, currentC
                 return;
             }
 
-            if (isPrimaryCount === 1 && currentCatalog?.isPrimary && !value.isPrimary) {
+            if (currentCatalogId && isPrimaryCount === 1 && currentCatalog?.isPrimary && !value.isPrimary) {
                 setValue?.({
                     active: true,
                     message: MESSAGE.CATALOG.UPDATE_ERROR,
